@@ -19,7 +19,7 @@ interface TableGiftProps {
   data: DataType[];
 }
 
-const TableGift: React.FC<TableGiftProps> = ({ data }) => {
+const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [form] = Form.useForm(); //
@@ -135,7 +135,7 @@ const TableGift: React.FC<TableGiftProps> = ({ data }) => {
   ];
 
   return (
-    <div className="container">
+    <div>
       <div className="bg-white w rounded-lg p-4">
         <p className="mb-5 text-sub-heading-bold">Quản Lý Mã Giảm Giá</p>
 
@@ -251,4 +251,4 @@ const TableGift: React.FC<TableGiftProps> = ({ data }) => {
   );
 };
 
-export default TableGift;
+export default TableGiftVoucher;

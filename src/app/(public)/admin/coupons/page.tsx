@@ -1,5 +1,6 @@
 import React from "react";
-import TableGift from "./table-gif";
+import TableGiftVoucher from "./table-giftvoucher";
+
 const dataGift = [
   {
     stt: 1,
@@ -31,5 +32,5 @@ const dataGift = [
   },
 ];
 export default function page() {
-  return <TableGift data={dataGift} />;
+  return <TableGiftVoucher data={dataGift} />;
 }
