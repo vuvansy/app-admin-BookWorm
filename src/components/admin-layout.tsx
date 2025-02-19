@@ -14,6 +14,7 @@ import {
     TagsOutlined,
     CommentOutlined,
     LineChartOutlined,
+    CaretDownOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, Avatar } from 'antd';
 import type { MenuProps } from 'antd';
@@ -131,7 +132,6 @@ export default function AdminLayout({
                         alignItems: "center",
                         justifyContent: "space-between",
                         padding: "0 80px 0 15px",
-
                     }}>
                         <span>
                             {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
@@ -142,7 +142,8 @@ export default function AdminLayout({
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                             <Space style={{ cursor: "pointer" }}>
                                 <Avatar src={'/avatar/avatar.jpg'} />
-                                Admin
+                                Xin Chào, Admin
+                                <CaretDownOutlined />
                             </Space>
                         </Dropdown>
                     </div>
