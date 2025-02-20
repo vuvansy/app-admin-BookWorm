@@ -32,8 +32,6 @@ const page: React.FC = () => {
     },
   ];
 
-  
-
   return (
     <div>
       <TableFeedback data={feedbackData} />
