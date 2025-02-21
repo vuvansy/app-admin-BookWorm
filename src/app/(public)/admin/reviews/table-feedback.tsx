@@ -24,7 +24,7 @@ const columns: TableColumnsType<Product> = [
     key: "image",
     render: (src: string) => (
       <div className="flex justify-center">
-        <Image width={80} height={80} src={src} alt="Ảnh sản phẩm" />
+        <Image width={80} height={80} src={src} alt="Ảnh sản phẩm" priority />
       </div>
     ),
   },

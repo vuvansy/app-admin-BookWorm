@@ -1,7 +1,7 @@
 "use client";
-import { Rate, Table } from "antd";
+import { Button, Rate, Table } from "antd";
 import { useParams } from "next/navigation";
-
+import { useRouter } from "next/navigation";
 const reviewsData = {
   "1": {
     name: "Nhóc Miko! Cô Bé Nhí Nhảnh - Tập 38",
@@ -48,7 +48,7 @@ const reviewsData = {
 const ReviewPage = () => {
   const params = useParams();
   const id = params.id as string;
-
+  const router = useRouter();
   const product = reviewsData[id as keyof typeof reviewsData] ?? null;
 
   if (!product) {
@@ -72,7 +72,7 @@ const ReviewPage = () => {
       title: "Nội Dung",
       dataIndex: "content",
       key: "content",
-      width: 400,
+      width: 700,
       className: "whitespace-normal break-words",
     },
   ];
@@ -85,6 +85,13 @@ const ReviewPage = () => {
         columns={columns}
         size="small"
       />
+      <Button
+        type="primary"
+        className="!flex !items-center"
+        onClick={() => router.push("/admin/reviews")}
+      >
+        Quay Lại
+      </Button>
     </div>
   );
 };
