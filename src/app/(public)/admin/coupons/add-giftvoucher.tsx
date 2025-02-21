@@ -11,8 +11,9 @@ const AddGiftVoucherModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
   const [form] = Form.useForm();
 
   const handleOk = () => {
-    form.validateFields()
-      .then(values => {
+    form
+      .validateFields()
+      .then((values) => {
         const formattedValues = {
           ...values,
           start_date: values.start_date.format("YYYY-MM-DD"),
@@ -21,7 +22,7 @@ const AddGiftVoucherModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
         onSubmit(formattedValues);
         form.resetFields();
       })
-      .catch(errorInfo => console.log("Lỗi:", errorInfo));
+      .catch((errorInfo) => console.log("Lỗi:", errorInfo));
   };
 
   return (
@@ -32,21 +33,43 @@ const AddGiftVoucherModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
       destroyOnClose={true}
       maskClosable={false}
       footer={[
-        <Button key="cancel" onClick={onClose}>Hủy</Button>,
-        <Button key="submit" type="primary" onClick={handleOk}>Tạo mới</Button>,
+        <Button key="cancel" onClick={onClose}>
+          Hủy
+        </Button>,
+        <Button key="submit" type="primary" onClick={handleOk}>
+          Tạo mới
+        </Button>,
       ]}
     >
       <Form form={form} layout="vertical">
-        <Form.Item label="Mã Giảm" name="code" rules={[{ required: true, message: "Vui lòng nhập mã giảm" }]}>
+        <Form.Item
+          label="Mã Giảm"
+          name="code"
+          rules={[{ required: true, message: "Vui lòng nhập mã giảm" }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item label="Phần trăm giảm %" name="discount" rules={[{ required: true, message: "Vui lòng nhập phần trăm giảm giá" }]}>
+        <Form.Item
+          label="Phần trăm giảm %"
+          name="discount"
+          rules={[
+            { required: true, message: "Vui lòng nhập phần trăm giảm giá" },
+          ]}
+        >
           <Input type="number" />
         </Form.Item>
-        <Form.Item label="Ngày bắt đầu" name="start_date" rules={[{ required: true, message: "Vui lòng nhập ngày bắt đầu" }]}>
+        <Form.Item
+          label="Ngày bắt đầu"
+          name="start_date"
+          rules={[{ required: true, message: "Vui lòng nhập ngày bắt đầu" }]}
+        >
           <DatePicker format="DD-MM-YYYY" className="w-full" />
         </Form.Item>
-        <Form.Item label="Ngày kết thúc" name="end_date" rules={[{ required: true, message: "Vui lòng nhập ngày kết thúc" }]}>
+        <Form.Item
+          label="Ngày kết thúc"
+          name="end_date"
+          rules={[{ required: true, message: "Vui lòng nhập ngày kết thúc" }]}
+        >
           <DatePicker format="DD-MM-YYYY" className="w-full" />
         </Form.Item>
       </Form>

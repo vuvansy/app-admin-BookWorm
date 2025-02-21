@@ -6,7 +6,17 @@ import dayjs from "dayjs";
 import type { PopconfirmProps, TableProps } from "antd";
 import AddGiftVoucherModal from "./add-giftvoucher";
 import EditGiftVoucherModal from "./edit-giftvoucher";
-import { DataType, TableGiftProps } from "./type";
+
+interface DataType {
+  stt: number;
+  code: string;
+  discount: number;
+  start_date: string;
+  end_date: string;
+}
+interface TableGiftProps {
+  data: DataType[];
+}
 const confirm: PopconfirmProps["onConfirm"] = (e) => {
   console.log(e);
   message.success("Click on Yes");
@@ -109,6 +119,7 @@ const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
           dataSource={data}
           rowKey="stt"
           className="ant-table-striped mt-5"
+          size="small"
         />
       </div>
       <AddGiftVoucherModal

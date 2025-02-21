@@ -1,8 +1,14 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Button, DatePicker } from "antd";
 import dayjs from "dayjs";
-import { DataType } from "./type";
 
+interface DataType {
+  stt: number;
+  code: string;
+  discount: number;
+  start_date: string;
+  end_date: string;
+}
 interface Props {
   open: boolean;
   onClose: () => void;

@@ -3,13 +3,6 @@
 import React from "react";
 import TableFeedback from "./table-feedback";
 
-interface DataType {
-  key: string;
-  image: string;
-  name: string;
-  rating: number;
-}
-
 const page: React.FC = () => {
   const feedbackData = [
     {
