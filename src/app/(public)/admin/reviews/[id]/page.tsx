@@ -28,7 +28,11 @@ const ReviewPage = () => {
     return <p>Không có đánh giá nào !</p>;
   }
   const columns = [
-    { title: "Người Đánh Giá", dataIndex: "user", key: "user" },
+    {
+      title: "Người Đánh Giá",
+      dataIndex: "user",
+      key: "user",
+    },
     {
       title: "Đánh Giá",
       dataIndex: "rating",
@@ -37,7 +41,13 @@ const ReviewPage = () => {
         <Rate disabled defaultValue={rating} className="!text-[14px]" />
       ),
     },
-    { title: "Nội Dung", dataIndex: "content", key: "content" },
+    {
+      title: "Nội Dung",
+      dataIndex: "content",
+      key: "content",
+      width: 400,
+      className: "whitespace-normal break-words",
+    },
   ];
   return (
     <div className="bg-white w rounded-lg p-4">

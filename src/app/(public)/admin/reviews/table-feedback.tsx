@@ -7,21 +7,26 @@ import Image from "next/image";
 
 // Định nghĩa kiểu dữ liệu cho props
 interface TableFeedbackProps {
-  data: any[]; 
+  data: any[];
 }
 const columns = [
   {
-    title: "Ảnh",
+    title: <div style={{ textAlign: "center" }}>Ảnh</div>,
     dataIndex: "image",
     key: "image",
+
     render: (src: string) => (
-      <Image width={50} height={50} src={src} alt="Ảnh sản phẩm" />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Image width={70} height={70} src={src} alt="Ảnh sản phẩm" />
+      </div>
     ),
   },
   {
     title: "Tên Sản Phẩm",
     dataIndex: "name",
     key: "name",
+    width: 600,
+    className: "whitespace-normal break-words",
   },
   {
     title: "Đánh Giá",
