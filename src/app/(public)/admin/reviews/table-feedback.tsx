@@ -1,23 +1,30 @@
 "use client";
 import React from "react";
-import { Rate, Table } from "antd";
+import { Rate, Table, TableColumnsType } from "antd";
 import Link from "next/link";
 import { BsEyeFill } from "react-icons/bs";
 import Image from "next/image";
 
+interface Product {
+  key: string | number;
+  image: string;
+  name: string;
+  rating: number;
+}
+
 // Định nghĩa kiểu dữ liệu cho props
 interface TableFeedbackProps {
-  data: any[];
+  data: Product[];
 }
-const columns = [
+const columns: TableColumnsType<Product> = [
   {
-    title: <div style={{ textAlign: "center" }}>Ảnh</div>,
+    title: "Ảnh",
+    align: "center",
     dataIndex: "image",
     key: "image",
-
     render: (src: string) => (
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Image width={70} height={70} src={src} alt="Ảnh sản phẩm" />
+      <div className="flex justify-center">
+        <Image width={80} height={80} src={src} alt="Ảnh sản phẩm" />
       </div>
     ),
   },
@@ -25,7 +32,7 @@ const columns = [
     title: "Tên Sản Phẩm",
     dataIndex: "name",
     key: "name",
-    width: 600,
+    width: 700,
     className: "whitespace-normal break-words",
   },
   {
@@ -40,10 +47,10 @@ const columns = [
     title: "Thao Tác",
     key: "action",
     render: (record: any) => (
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div className="flex gap-[10px]">
         <Link
           href={`/admin/reviews/${record.key}`}
-          className="p-[7px] bg-[#D84040] cursor-pointer rounded-lg"
+          className="px-3 py-[6px] bg-[#2F80ED] cursor-pointer rounded-lg"
         >
           <BsEyeFill className="text-white text-[16px]" />
         </Link>

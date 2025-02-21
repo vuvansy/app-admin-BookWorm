@@ -6,15 +6,42 @@ const reviewsData = {
   "1": {
     name: "Nhóc Miko! Cô Bé Nhí Nhảnh - Tập 38",
     reviews: [
-      { user: "Võ Văn Khang", rating: 5, content: "Sách hay nên mua để đọc" },
-      { user: "Võ Văn Khang", rating: 3, content: "Nội dung ổn" },
-      { user: "Võ Văn Khang", rating: 5, content: "Đáng giá tiền" },
-      { user: "Võ Văn Khang", rating: 4, content: "Rất hay" },
+      {
+        id: "r1",
+        user: "Võ Văn Khang",
+        rating: 5,
+        content: "Sách hay nên mua để đọc",
+      },
+      {
+        id: "r2",
+        user: "Võ Văn Khang",
+        rating: 3,
+        content: "Nội dung ổn",
+      },
+      {
+        id: "r3",
+        user: "Võ Văn Khang",
+        rating: 5,
+        content: "Đáng giá tiền",
+      },
+      {
+        id: "r4",
+        user: "Võ Văn Khang",
+        rating: 4,
+        content: "Rất hay",
+      },
     ],
   },
   "2": {
     name: "Truyện Tranh ABC",
-    reviews: [{ user: "Nguyễn Văn A", rating: 4, content: "Rất hay" }],
+    reviews: [
+      {
+        id: "r5",
+        user: "Nguyễn Văn A",
+        rating: 4,
+        content: "Rất hay",
+      },
+    ],
   },
 };
 
@@ -54,8 +81,9 @@ const ReviewPage = () => {
       <p className="mb-5 text-body-bold uppercase">{product.name}</p>
       <Table
         dataSource={product.reviews}
-        rowKey={(record) => record.user}
+        rowKey={(record) => record.id || record.user}
         columns={columns}
+        size="small"
       />
     </div>
   );
