@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import {
     AppstoreOutlined,
-    ExceptionOutlined,
     HeartTwoTone,
     UserOutlined,
     DollarCircleOutlined,
@@ -16,6 +15,8 @@ import {
     LineChartOutlined,
     CaretDownOutlined,
     ProfileOutlined,
+    FileImageOutlined,
+    FileDoneOutlined,
 } from '@ant-design/icons';
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
@@ -56,11 +57,15 @@ export default function AdminLayout({
             key: '/admin/user',
             icon: <UserOutlined />,
         },
-
+        {
+            label: <Link href='/admin/banner'>Banner</Link>,
+            key: '/admin/banner',
+            icon: <FileImageOutlined />,
+        },
         {
             label: <Link href='/admin/genre'>Danh mục</Link>,
             key: '/admin/genre',
-            icon: <ExceptionOutlined />
+            icon: <FileDoneOutlined />
         },
         {
             label: <Link href='/admin/book'>Sản phẩm</Link>,
