@@ -64,6 +64,8 @@ const TableBookWarning: React.FC<TableFeedbackProps> = ({ data }) => {
         dataSource={filteredData}
         pagination={{ pageSize: 5 }}
         rowKey="key"
+        
+        size="small"
         className="ant-table-striped mt-5"
       />
     </div>

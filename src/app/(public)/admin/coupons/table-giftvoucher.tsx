@@ -106,19 +106,21 @@ const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
   return (
     <div>
       <div className="bg-white w rounded-lg p-4">
-        <p className="mb-5 text-body-bold uppercase">Quản Lý Mã Giảm Giá</p>
-        <Button
-          type="primary"
-          className=" !flex !items-center"
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          Thêm Mã <PlusOutlined />
-        </Button>
+        <h2 className="text-body-bold uppercase">Quản Lý Mã Giảm Giá</h2>
+        <div className="flex justify-end pb-5">
+          <Button
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            Thêm mới
+          </Button>
+        </div>
         <Table
           columns={columns}
           dataSource={data}
           rowKey="stt"
-          className="ant-table-striped mt-5"
+          className="ant-table-striped"
           size="small"
         />
       </div>

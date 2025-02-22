@@ -1,5 +1,5 @@
 "use client"
-    ;
+
 import { useState } from "react";
 import { Table, Tabs, TableProps, Empty } from 'antd';
 import { BsEyeFill } from "react-icons/bs";
