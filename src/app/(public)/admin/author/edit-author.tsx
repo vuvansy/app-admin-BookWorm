@@ -29,11 +29,6 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
                 maskClosable={true}
                 onCancel={onClose}
                 open={open}
-                styles={{
-                    body: {
-                        paddingBottom: 80,
-                    },
-                }}
             >
                 <Form
                     form={form}
@@ -41,7 +36,6 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
                     name="form-edit"
                     autoComplete="off"
                     layout="vertical"
-                    size="large"
                     initialValues={author || undefined}
                 >
                     <Form.Item

@@ -38,13 +38,8 @@ const AddAuthor: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                     maskClosable={true}
                     onCancel={onClose}
                     open={open}
-                    styles={{
-                        body: {
-                            paddingBottom: 80,
-                        },
-                    }}
                 >
-                    <Form form={form} name="form-add" onFinish={onFinish} autoComplete="off" layout="vertical" size='large'>
+                    <Form form={form} name="form-add" onFinish={onFinish} autoComplete="off" layout="vertical">
 
                         <Form.Item<FieldType>
                             name="name"
