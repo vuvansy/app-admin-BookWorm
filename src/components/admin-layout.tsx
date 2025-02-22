@@ -1,9 +1,8 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     AppstoreOutlined,
-    ExceptionOutlined,
     HeartTwoTone,
     UserOutlined,
     DollarCircleOutlined,
@@ -15,10 +14,17 @@ import {
     CommentOutlined,
     LineChartOutlined,
     CaretDownOutlined,
+    ProfileOutlined,
+    FileImageOutlined,
+    FileDoneOutlined,
 } from '@ant-design/icons';
+import { IoSettingsOutline } from "react-icons/io5";
+import { FaRegUser } from "react-icons/fa6";
+import { TbLogout } from "react-icons/tb";
 import { Layout, Menu, Dropdown, Space, Avatar } from 'antd';
 import type { MenuProps } from 'antd';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type MenuItem = Required<MenuProps>['items'][number];
 const { Content, Footer, Sider } = Layout;
@@ -28,76 +34,137 @@ export default function AdminLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const pathname = usePathname();
+
     const [collapsed, setCollapsed] = useState(false);
-    const [activeMenu, setActiveMenu] = useState('dashboard');
+    const [activeMenu, setActiveMenu] = useState('');
+    const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+
+    const handleLogout = async () => {
+        //todo
+        // Logic xử lý đăng xuấ
+    }
 
     const items: MenuItem[] = [
         {
             label: <Link href='/'>Trang chủ</Link>,
-            key: 'dashboard',
+            key: '/',
             icon: <AppstoreOutlined />
         },
         {
             label: <Link href='/admin/user'>Người dùng</Link>,
-            key: 'user',
+            key: '/admin/user',
             icon: <UserOutlined />,
         },
-
+        {
+            label: <Link href='/admin/banner'>Banner</Link>,
+            key: '/admin/banner',
+            icon: <FileImageOutlined />,
+        },
         {
             label: <Link href='/admin/genre'>Danh mục</Link>,
-            key: 'genre',
-            icon: <ExceptionOutlined />
+            key: '/admin/genre',
+            icon: <FileDoneOutlined />
         },
         {
             label: <Link href='/admin/book'>Sản phẩm</Link>,
-            key: 'book',
+            key: '/admin/book',
             icon: <ReadOutlined />
         },
         {
             label: <Link href='/admin/author'>Tác giả</Link>,
-            key: 'author',
+            key: '/admin/author',
             icon: <AuditOutlined />
         },
         {
             label: <Link href='/admin/coupons'>Mã giảm giá</Link>,
-            key: 'coupons',
+            key: '/admin/coupons',
             icon: <TagsOutlined />
         },
         {
             label: <Link href='/admin/reviews'>Phản hồi</Link>,
-            key: 'reviews',
+            key: '/admin/reviews',
             icon: <CommentOutlined />
         },
         {
             label: <Link href='/admin/order'>Đơn hàng</Link>,
-            key: 'order',
+            key: '/admin/order',
             icon: <DollarCircleOutlined />
         },
         {
-            label: <Link href='/admin/statistics'>Thống kê</Link>,
-            key: 'statistics',
-            icon: <LineChartOutlined />
+            label: <span>Thống kê</span>,
+            key: '/admin/statistics',
+            icon: <LineChartOutlined />,
+            children: [
+                {
+                    label: <Link href='/admin/statistics/bookwarning'>SP Sắp Hết</Link>,
+                    key: "/admin/statistics/bookwarning",
+                    icon: <ProfileOutlined />,
+                },
+                {
+                    label: <Link href='/admin/statistics/statisticdetail'>Thông Kê</Link>,
+                    key: "/admin/statistics/statisticdetail",
+                    icon: <ProfileOutlined />,
+                },
+            ]
         },
 
     ];
 
+    useEffect(() => {
+        const foundItem = items.find((item) => item?.key === pathname) || null;
+        const foundParent = items.find(
+            (item) =>
+                item &&
+                "children" in item &&
+                Array.isArray(item.children) &&
+                item.children.some((subItem) => subItem?.key === pathname)
+        ) || null;
+
+        if (foundItem) {
+            setActiveMenu(foundItem.key?.toString() ?? "");
+            setOpenKeys([]);
+        } else if (foundParent) {
+            setActiveMenu(pathname.toString() ?? "");
+            setOpenKeys([foundParent.key?.toString() ?? ""]);
+        } else {
+            setActiveMenu("");
+            setOpenKeys([]);
+        }
+    }, [pathname]);
+
     const itemsDropdown = [
         {
-            label: <label
-                style={{ cursor: 'pointer' }}
-                onClick={() => alert("me")}
-            >Quản lý tài khoản</label>,
+            label: (
+                <Link href="/admin/account" className="flex items-center gap-x-2">
+                    <FaRegUser className="text-[18px]" />
+                    <span>Quản lý tài khoản</span>
+                </Link>
+            ),
             key: 'account',
         },
         {
-            label: <Link href={'/'}>Trang chủ</Link>,
-            key: 'home',
+            label: (
+                <Link href="/admin/change-password" className="flex items-center gap-x-2">
+                    <IoSettingsOutline className="text-[18px]" />
+                    <span>Đổi mật khẩu</span>
+                </Link>
+            ),
+            key: 'change-password',
         },
         {
-            label: <label
-                style={{ cursor: 'pointer' }}
-
-            >Đăng xuất</label>,
+            label: (
+                <div className="flex items-center gap-x-2">
+                    <TbLogout className="text-[18px]" />
+                    <label
+                        style={{ cursor: 'pointer' }}
+                        onClick={handleLogout}
+                    >
+                        Đăng xuất
+                    </label>
+                </div>
+            ),
             key: 'logout',
         },
     ];
@@ -118,9 +185,11 @@ export default function AdminLayout({
                         <Link href="/" className='text-bg-text'>Admin</Link>
                     </div>
                     <Menu
-                        defaultSelectedKeys={[activeMenu]}
+                        selectedKeys={[activeMenu]}
+                        openKeys={openKeys}
                         mode="inline"
                         items={items}
+                        onOpenChange={setOpenKeys}
                         onClick={(e) => setActiveMenu(e.key)}
                     />
                 </Sider>

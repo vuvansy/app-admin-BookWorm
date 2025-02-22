@@ -1,11 +1,11 @@
 import { Col, Row } from "antd"
 import { FaMoneyBills } from "react-icons/fa6";
 import { MdAttachMoney } from "react-icons/md";
-import { GiOpenBook } from "react-icons/gi";
 import { BiSolidMessageDetail } from "react-icons/bi";
 import Statistical from "@/components/dashboard/statistical";
 import CustomerNew from "@/components/dashboard/customer-new";
 import TableOrderWait from "@/components/dashboard/table-order-wait";
+import { HiUserGroup } from "react-icons/hi2";
 
 const HomePage = () => {
 
@@ -38,10 +38,10 @@ const HomePage = () => {
           <Col span={6}>
             <div className="flex rounded border h-[90px] bg-white">
               <div className="py-[25px] bg-[#0D63D6] basis-2/6 flex items-center justify-center">
-                <GiOpenBook className="text-white text-[30px] " />
+                <HiUserGroup className="text-white text-[30px] " />
               </div>
               <div className="basis-4/6 flex flex-col py-4 pl-3">
-                <h3 className="text-body1 uppercase">Tổng sản phẩm </h3>
+                <h3 className="text-body1 uppercase">Tổng người dùng</h3>
                 <div className="text-body-bold">1.120</div>
               </div>
             </div>
