@@ -77,8 +77,11 @@ const AuthorTable = ({ data }: { data: Author[] }) => {
     return (
         <div>
             <div className="bg-white w rounded-lg p-4">
-                <p className="mb-5 text-body-bold uppercase">Quản Lý Tác Giả</p>
-                <Button type="primary" onClick={() => setOpenAdd(true)}>Thêm Tác Giả</Button>
+                <p className=" text-body-bold uppercase">Quản Lý Tác Giả</p>
+                <div className="flex justify-end pb-5">
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpenAdd(true)}>Thêm mới</Button>
+                </div>
+
                 <Table
                     columns={columns}
                     dataSource={data}
@@ -87,8 +90,9 @@ const AuthorTable = ({ data }: { data: Author[] }) => {
                         current: currentPage,
                         onChange: (page) => setCurrentPage(page),
                     }}
+                    size="small"
                     rowKey="id"
-                    className="ant-table-striped mt-5"
+                    className="ant-table-striped"
                 />
             </div>
             <AddAuthor open={openAdd} onClose={() => setOpenAdd(false)} onSubmit={handleAddAuthor} />
