@@ -46,7 +46,7 @@ const dataOrder: DataTypeOrder[] = [
 
 ];
 
-const InfoOrder = () =>{
+const InfoOrder = () => {
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         console.log('Success:', values);
@@ -77,7 +77,7 @@ const InfoOrder = () =>{
             ),
         },
         {
-            title: 'Giá sản phẩm',
+            title: 'Giá Sản Phẩm',
             dataIndex: 'price',
             key: 'price',
             align: "center",
@@ -88,13 +88,13 @@ const InfoOrder = () =>{
             ),
         },
         {
-            title: 'Số lượng',
+            title: 'Số Lượng',
             dataIndex: 'quantity',
             key: 'quantity',
             align: "center",
         },
         {
-            title: 'Thành tiền',
+            title: 'Thành Tiền',
             dataIndex: 'total',
             key: 'total',
             align: "center",
@@ -106,13 +106,13 @@ const InfoOrder = () =>{
         },
     ];
 
-    return(
+    return (
         <>
-         <div className="flex justify-between pb-[10px]">
+            <div className="flex justify-between pb-[10px]">
                 <h2 className="text-body1 uppercase font-semibold">Thông tin đơn hàng</h2>
                 <div className="flex gap-[8px]">
                     <p className="font-semibold">67af11e06e65f61d9f0e5900</p>
-                    <p className="px-3 bg-yellow-1 text-white font-semibold rounded">Chờ xác nhận</p>
+                    <p className="px-3 bg-yellow-1 text-white font-semibold rounded">Chờ Xác Nhận</p>
                 </div>
             </div>
             <hr />
@@ -172,7 +172,7 @@ const InfoOrder = () =>{
                 </div>
             </div>
             <div className="py-[10px]">
-                <h2 className="text-body-bold pb-[10px]">Thông tin sản phẩm</h2>
+                <h2 className="text-body-bold pb-[10px]">Thông Tin Sản Phẩm</h2>
                 <Table<DataTypeOrder>
                     columns={columnsOrder}
                     dataSource={dataOrder}
