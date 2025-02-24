@@ -19,7 +19,6 @@ const FilterForm = () => {
             className='w-full flex '
             onFinish={onFinish}
             autoComplete="off"
-            size='large'
         >
             <div className='basis-2/3 flex gap-x-[100px] items-center'>
                 <Form.Item<FieldType>
@@ -40,8 +39,8 @@ const FilterForm = () => {
                 </Form.Item>
             </div>
             <div className='basis-1/3 flex justify-end gap-x-[15px]'>
-                <Button type="default" className=''>Reset</Button>
-                <Button type="primary" htmlType="submit" className=''>Query </Button>
+                <Button type="default" className=''>Đặt lại</Button>
+                <Button type="primary" htmlType="submit" className=''>Tìm kiếm</Button>
             </div>
 
 

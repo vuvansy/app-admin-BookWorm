@@ -25,38 +25,52 @@ const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
             >
                 {user && (
                     <div className="">
-                        <div className="w-[650px] grid grid-cols-2 rounded-lg ">
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10 rounded-tl-lg">Id</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.id}</div>
+                        <div className="w-[650px] flex flex-wrap rounded-lg ">
+                            <div className="w-full flex">
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10 rounded-tl-lg">Id</div>
+                                    <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.id}</div>
+                                </div>
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Tên hiển thị</div>
+                                    <div className="basis-2/3 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">{user.fullName}</div>
+                                </div>
                             </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Tên hiển thị</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.fullName}</div>
+                            <div className="w-full flex">
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Email</div>
+                                    <div className="basis-2/3 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">{user.email}</div>
+                                </div>
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Số điện thoại</div>
+                                    <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.phone}</div>
+                                </div>
                             </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Email</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.email}</div>
+                            <div className="w-full flex">
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Role</div>
+                                    <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.role}</div>
+                                </div>
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Ảnh đại diện</div>
+                                    <div className="basis-2/3 flex items-center justify-center border border-bg-main"><Image width={60} height={60} alt="User Avatar" className="rounded-full" src={user.image} /></div>
+                                </div>
                             </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Số điện thoại</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.phone}</div>
+                            <div className="w-full flex">
+                                <div className="basis-1/6 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Địa chỉ</div>
+                                <div className="basis-5/6 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">
+                                    {`${user.address.specific_address}, ${user.address.ward}, ${user.address.district}, ${user.address.city}`}
+                                </div>
                             </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Role</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.role}</div>
-                            </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Ảnh đại diện</div>
-                                <div className="basis-2/3 flex items-center justify-center border border-bg-main"><Image width={60} height={60} alt="User Avatar" className="rounded-full" src={user.image} /></div>
-                            </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Create At</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.createdAt}</div>
-                            </div>
-                            <div className="w-[325px] flex">
-                                <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Update At</div>
-                                <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.updatedAt}</div>
+                            <div className="w-full flex">
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Create At</div>
+                                    <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.createdAt}</div>
+                                </div>
+                                <div className="w-[325px] flex">
+                                    <div className="basis-1/3 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Update At</div>
+                                    <div className="basis-2/3 leading-[60px] text-body1 flex items-center justify-center border border-bg-main">{user.updatedAt}</div>
+                                </div>
                             </div>
                         </div>
                     </div>

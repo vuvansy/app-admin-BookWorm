@@ -45,6 +45,7 @@ const AddAuthor: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                         <Form.Item<FieldType>
                             name="name"
                             label="Tên tác giả"
+                            rules={[{ required: true, message: 'Hãy nhập tên tác giả!' }]}
                         >
                             <Input />
                         </Form.Item>
