@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, Button, DatePicker } from "antd";
+import { Modal, Form, Input, Button, DatePicker, Divider } from "antd";
 import dayjs from "dayjs";
 
 interface DataType {
@@ -51,7 +51,7 @@ const EditGiftVoucherModal: React.FC<Props> = ({
 
   return (
     <Modal
-      title="Chỉnh sửa mã giảm giá"
+      title="Chỉnh Sửa Mã Giảm Giá"
       open={open}
       onCancel={onClose}
       destroyOnClose={true}
@@ -65,6 +65,7 @@ const EditGiftVoucherModal: React.FC<Props> = ({
         </Button>,
       ]}
     >
+      <Divider />
       <Form form={form} layout="vertical">
         <Form.Item
           label="Mã Giảm"

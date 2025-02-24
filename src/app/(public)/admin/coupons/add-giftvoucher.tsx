@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Form, Input, Button, DatePicker } from "antd";
+import { Modal, Form, Input, Button, DatePicker, Divider } from "antd";
 
 interface Props {
   open: boolean;
@@ -27,7 +27,7 @@ const AddGiftVoucherModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
 
   return (
     <Modal
-      title="Thêm mới mã giảm giá"
+      title="Thêm Mới Mã Giảm Giá"
       open={open}
       onCancel={onClose}
       destroyOnClose={true}
@@ -41,6 +41,7 @@ const AddGiftVoucherModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
         </Button>,
       ]}
     >
+      <Divider />
       <Form form={form} layout="vertical">
         <Form.Item
           label="Mã Giảm"

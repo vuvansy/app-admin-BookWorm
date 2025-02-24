@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, ConfigProvider, DatePicker, Drawer, Form, FormProps, Input, Modal, Row, Select, Space } from 'antd';
+import { Button, Col, ConfigProvider, DatePicker, Divider, Drawer, Form, FormProps, Input, Modal, Row, Select, Space } from 'antd';
 
 
 interface Props {
@@ -39,6 +39,7 @@ const AddAuthor: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                     onCancel={onClose}
                     open={open}
                 >
+                    <Divider />
                     <Form form={form} name="form-add" onFinish={onFinish} autoComplete="off" layout="vertical">
 
                         <Form.Item<FieldType>

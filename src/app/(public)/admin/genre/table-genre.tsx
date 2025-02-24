@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from "react";
 import { Table, Button, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import AddGenre from "./add-genre";
 import EditGenre from "./edit-genre";
 
@@ -36,7 +36,7 @@ const TableGenre: React.FC = () => {
   };
 
   const hideEditModal = () => {
-    setEditingGenre(null); 
+    setEditingGenre(null);
     setIsEditModalVisible(false);
   };
 
@@ -88,26 +88,28 @@ const TableGenre: React.FC = () => {
       title: "Thao Tác",
       key: "actions",
       align: "left",
-      render: (_: any, record: Genre) => (
-        <>
-          <Button
-            size="small"
-            type="text"
-            icon={<EditOutlined style={{ color: "goldenrod" }} />}
-            onClick={() => showEditModal(record)}
-          />
-          <Popconfirm
-            title="Xác nhận xóa"
-            description="Bạn có chắc chắn muốn xóa danh mục này không?"
-            onConfirm={() => handleDeleteGenre(record.id)}
-            okText="Xóa"
-            cancelText="Hủy"
-            placement="leftTop"
-          >
-            <Button size="small" type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </>
-      ),
+      render(_, record) {
+        return (
+          <div className="flex gap-x-[20px]">
+            <EditTwoTone
+              twoToneColor="#f57800" style={{ cursor: "pointer" }}
+              onClick={() => showEditModal(record)}
+            />
+            <Popconfirm
+              placement="leftTop"
+              title={"Xác nhận xóa book"}
+              description={"Bạn có chắc chắn muốn xóa danh mục này ?"}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <span style={{ cursor: "pointer" }}>
+                <DeleteTwoTone twoToneColor="#ff4d4f" />
+              </span>
+            </Popconfirm>
+          </div>
+
+        )
+      }
     },
   ];
 

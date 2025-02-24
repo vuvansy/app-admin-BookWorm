@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Modal, Form, Input, Button,InputRef } from "antd";
+import { Modal, Form, Input, Button, InputRef, Divider } from "antd";
 
 interface EditGenreProps {
   visible: boolean;
@@ -35,7 +35,7 @@ const EditGenre: React.FC<EditGenreProps> = ({ visible, onClose, onSubmit, genre
     <>
       <Button ref={editButtonRef} style={{ display: "none" }} />
       <Modal
-        title="Chỉnh Sửa Thể Loại"
+        title="Chỉnh Sửa Danh Mục"
         open={visible}
         onCancel={onClose}
         onOk={handleOk}
@@ -43,8 +43,10 @@ const EditGenre: React.FC<EditGenreProps> = ({ visible, onClose, onSubmit, genre
         cancelText="Hủy"
         destroyOnClose
       >
+        <Divider />
         <Form form={form} layout="vertical">
           <Form.Item
+            label="Tên Danh Mục"
             name="name"
             rules={[{ required: true, message: "Vui lòng nhập tên thể loại!" }]}
           >
