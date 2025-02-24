@@ -1,7 +1,13 @@
-import React from 'react'
+import React from "react";
+import TableGenre from './table-genre';
 
-export default function page() {
-    return (
-        <div>page</div>
-    )
-}
+
+const GenrePage: React.FC = () => {
+  return (
+    <div >
+      <TableGenre />
+    </div>
+  );
+};
+
+export default GenrePage;
