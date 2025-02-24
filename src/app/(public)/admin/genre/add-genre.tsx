@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Modal, Form, Input, Button ,InputRef } from "antd";
+import { Modal, Form, Input, Button, InputRef, Divider } from "antd";
 
 interface Props {
   visible: boolean;
@@ -32,19 +32,19 @@ const AddGenre: React.FC<Props> = ({ visible, onClose, onSubmit }) => {
     <>
       <Button ref={addButtonRef} style={{ display: "none" }} />
       <Modal
-        title="Thêm Thể Loại Mới"
+        title="Thêm Mới Danh Mục"
         open={visible}
         onCancel={onClose}
         onOk={handleOk}
         okText="Tạo Mới"
         cancelText="Hủy"
-        centered
         destroyOnClose
       >
+        <Divider />
         <Form form={form} layout="vertical">
           <Form.Item
             name="name"
-           
+            label="Tên Danh Mục"
             rules={[{ required: true, message: "Vui lòng nhập tên thể loại!" }]}
           >
             <Input ref={inputRef} placeholder="Nhập tên thể loại" />

@@ -1,9 +1,13 @@
 "use client"
 
+import { Button } from 'antd';
 import { Popconfirm, Space, Table, } from 'antd';
 import type { TableProps } from 'antd';
 import Image from 'next/image';
 import { DeleteTwoTone, EditTwoTone, PlusOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+
+import CreateBanner from './add-banner';
 
 interface DataType {
     key: string;
@@ -109,12 +113,31 @@ const columns: TableProps<DataType>['columns'] = [
 ];
 
 const TableBanner = () => {
+
+    const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+
     return (
-        <Table<DataType>
-            columns={columns}
-            dataSource={data}
-            size="small"
-        />
+        <>
+            <h2 className="text-body-bold uppercase">Danh sách Banner</h2>
+            <div className="flex justify-end pb-[20px]">
+                <Button icon={<PlusOutlined />}
+                    type="primary"
+                    onClick={() => {
+                        setOpenModalCreate(true);
+                    }}
+                >Thêm mới</Button>
+            </div>
+            <Table<DataType>
+                columns={columns}
+                dataSource={data}
+                size="small"
+            />
+
+            <CreateBanner
+                openModalCreate={openModalCreate}
+                setOpenModalCreate={setOpenModalCreate}
+            />
+        </>
     )
 }
 

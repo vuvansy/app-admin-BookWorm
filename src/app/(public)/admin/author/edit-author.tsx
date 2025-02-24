@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react';
-import { Form, Input, Button, ConfigProvider, Modal } from 'antd';
+import { Form, Input, Button, ConfigProvider, Modal, Divider } from 'antd';
 import { ModalEditProps } from './type';
 
 
@@ -30,6 +30,7 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
                 onCancel={onClose}
                 open={open}
             >
+                <Divider />
                 <Form
                     form={form}
                     onFinish={onFinish}

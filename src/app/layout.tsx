@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import StyledComponentsRegistry from '@/lib/antd.registry';
 import "./globals.css"
+import { App } from "antd";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <StyledComponentsRegistry>
+          <App>
           {children}
+          </App>
         </StyledComponentsRegistry>
       </body>
     </html >
