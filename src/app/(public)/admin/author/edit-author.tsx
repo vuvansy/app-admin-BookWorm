@@ -41,6 +41,7 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
                     <Form.Item
                         name="name"
                         label="Tên tác giả"
+                        rules={[{ required: true, message: 'Hãy nhập tên tác giả!' }]}
                     >
                         <Input />
                     </Form.Item>

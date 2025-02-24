@@ -44,16 +44,18 @@ const AuthorTable = ({ data }: { data: Author[] }) => {
         {
             title: 'STT',
             dataIndex: 'stt',
-            width: 150,
+            align: 'center' as 'center',
             render: (_: any, __: Author, index: number) => (currentPage - 1) * pageSize + index + 1,
         },
         {
             title: 'Tên Tác Giả',
             dataIndex: 'name',
-            width: 1200,
+            align: 'center' as 'center',
         },
         {
             title: 'Thao Tác',
+            align: 'center' as 'center',
+            width: 600,
             render: (_: any, record: Author) => (
                 <Space size="middle">
                     {<EditTwoTone twoToneColor={'#f57800'} onClick={() => showEdit(record)} className="px-[10px]" />}

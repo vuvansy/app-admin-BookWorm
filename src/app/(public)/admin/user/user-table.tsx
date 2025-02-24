@@ -7,6 +7,13 @@ import { useState } from "react";
 import ModalProfile from "./modal-profile";
 import ModalEdit from "./modal-edit";
 
+export interface Address {
+    city: string;
+    district: string;
+    ward: string;
+    specific_address: string;
+}
+
 export interface User {
     id: string;
     fullName: string;
@@ -14,6 +21,8 @@ export interface User {
     phone: string;
     role: string;
     image: string;
+    password: string;
+    address: Address;
     createdAt: string;
     updatedAt: string;
 }
@@ -61,7 +70,7 @@ const UserTable = ({ data }: { data: User[] }) => {
 
     const columns = [
         {
-            title: 'Id',
+            title: 'ID',
             dataIndex: 'id',
             render: (text: string, record: User) => <div>
                 <a className="text-blue-500" onClick={() => showDrawer(record)}>{text}</a>
@@ -76,7 +85,7 @@ const UserTable = ({ data }: { data: User[] }) => {
             dataIndex: 'email',
         },
         {
-            title: 'Ủy quyền',
+            title: 'Ủy Quyền',
             dataIndex: 'role',
         },
         {
@@ -119,7 +128,7 @@ const UserTable = ({ data }: { data: User[] }) => {
                 columns={columns}
                 dataSource={data}
                 pagination={{ pageSize: 5 }}
-                rowKey="id" />;
+                rowKey="id" />
             <ModalProfile open={openProfile} user={selectedUser} onClose={onClose} />
             <ModalEdit open={openEdit} user={selectedUser} onClose={onCloseEdit} onFinish={onFinishEdit} />
         </>
