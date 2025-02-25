@@ -1,19 +1,37 @@
 'use client'
 
-import React, { useEffect } from 'react';
-import { Drawer, Form, Input, Select, Button, ConfigProvider, Modal, Row, Col, Divider } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Drawer, Form, Input, Select, Button, ConfigProvider, Modal, Row, Col, Divider, FormProps, App } from 'antd';
 import { User } from './user-table';
 
 const { Option } = Select;
 
-interface ModalEditProps {
-    open: boolean;
+type AddressType = {
+    city: string;
+    district: string;
+    ward: string;
+    specific_address: string;
+};
+type FieldType = {
+    role: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    address: AddressType;
+    password: string;
+    confirmPassword: string;
+
+};
+interface Props {
+    openEdit: boolean;
     user: User | null;
-    onClose: () => void;
-    onFinish: (values: User) => void;
+    setOpenEdit: (values: boolean) => void;
 }
 
-const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) => {
+const ModalEdit = (props: Props) => {
+    const { openEdit, setOpenEdit, user } = props;
+    const [isSubmit, setIsSubmit] = useState(false);
+    const { message, modal, notification } = App.useApp();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -21,6 +39,14 @@ const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) 
             form.setFieldsValue(user);
         }
     }, [user, form]);
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        setIsSubmit(true);
+        message.success('Success!');
+        console.log(values);
+        setOpenEdit(false);
+        form.resetFields();
+        setIsSubmit(false);
+    };
     return (
         <ConfigProvider
             theme={{
@@ -31,25 +57,30 @@ const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) 
         >
             <Modal
                 title="Chỉnh Sửa Người Dùng"
-                width={1020}
-                footer={null}
-                maskClosable={true}
-                onCancel={onClose}
-                open={open}
+                width={"70vw"}
+                onOk={() => { form.submit() }}
+                okText={"Cập Nhật"}
+                cancelText={"Hủy"}
+                destroyOnClose={true}
+                maskClosable={false}
+                onCancel={() => {
+                    form.resetFields();
+                    setOpenEdit(false);
+                }}
+                open={openEdit}
             >
                 <Divider />
                 <Form
                     form={form}
-                    name="form-edit"
+                    name="form-add"
                     onFinish={onFinish}
                     autoComplete="off"
                     layout="vertical"
-                    initialValues={user || undefined}
                 >
 
 
                     <div className='flex justify-between gap-x-5'>
-                        <Form.Item
+                        <Form.Item<FieldType>
                             name="fullName"
                             label="Tên Hiển Thị"
                             rules={[{ required: true, message: 'Hãy nhập tên hiển thị!' }]}
@@ -59,7 +90,7 @@ const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) 
                         </Form.Item>
 
 
-                        <Form.Item
+                        <Form.Item<FieldType>
                             name="email"
                             label="Email"
                             rules={[{ required: true, message: 'Hãy nhập Email!' }]}
@@ -70,7 +101,7 @@ const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) 
                     </div>
 
                     <div className='flex justify-between gap-x-5'>
-                        <Form.Item
+                        <Form.Item<FieldType>
                             name="phone"
                             label="Số Điện Thoại"
                             rules={[{ required: true, message: 'Hãy nhập số điện thoại!' }]}
@@ -79,15 +110,18 @@ const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) 
                             <Input />
                         </Form.Item>
 
-                        <Form.Item
+                        <Form.Item<FieldType>
                             name="role"
                             label="Ủy Quyền"
                             className='basis-1/2'
                         >
-                            <Select>
-                                <Option value="ADMIN">Tài khoản quản trị</Option>
-                                <Option value="USER">Tài khoản khách hàng</Option>
-                            </Select>
+                            <Select
+                                options={[
+                                    { value: "ADMIN", label: "Tài Khoản Quản Trị" },
+                                    { value: "USER", label: "Tài Khoản Khách Hàng" },
+
+                                ]}
+                            />
                         </Form.Item>
                     </div>
                     <div>
@@ -137,13 +171,6 @@ const ModalEdit: React.FC<ModalEditProps> = ({ open, user, onClose, onFinish }) 
                                 </Col>
                             </Row>
                         </Form.Item>
-                    </div>
-
-                    <div className="flex justify-end gap-x-[15px]">
-                        <Button onClick={onClose}>Hủy</Button>
-                        <Button type="primary" htmlType="submit">
-                            Lưu
-                        </Button>
                     </div>
                 </Form>
             </Modal>

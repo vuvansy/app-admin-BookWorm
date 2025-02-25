@@ -1,12 +1,26 @@
 'use client'
 
-import React, { useEffect } from 'react';
-import { Form, Input, Button, ConfigProvider, Modal, Divider } from 'antd';
-import { ModalEditProps } from './type';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, ConfigProvider, Modal, Divider, FormProps, App } from 'antd';
 
+type FieldType = {
+    name?: string;
+};
+interface Author {
+    id: string;
+    name: string;
+}
+interface Props {
+    openEdit: boolean;
+    setOpenEdit: (values: boolean) => void;
+    author: Author | null;
 
+}
 
-const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish }) => {
+const EditAuthor = (props: Props) => {
+    const { openEdit, setOpenEdit, author } = props;
+    const [isSubmit, setIsSubmit] = useState(false);
+    const { message, modal, notification } = App.useApp();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -14,6 +28,14 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
             form.setFieldsValue(author);
         }
     }, [author, form]);
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        setIsSubmit(true);
+        message.success('Success!');
+        console.log(values);
+        setOpenEdit(false);
+        form.resetFields();
+        setIsSubmit(false);
+    };
     return (
         <ConfigProvider
             theme={{
@@ -24,11 +46,17 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
         >
             <Modal
                 title="Chỉnh sửa tác giả"
-                width={600}
-                footer={null}
-                maskClosable={true}
-                onCancel={onClose}
-                open={open}
+                width={"40vw"}
+                onOk={() => { form.submit() }}
+                okText={"Cập Nhật"}
+                cancelText={"Hủy"}
+                destroyOnClose={true}
+                maskClosable={false}
+                onCancel={() => {
+                    form.resetFields();
+                    setOpenEdit(false);
+                }}
+                open={openEdit}
             >
                 <Divider />
                 <Form
@@ -37,7 +65,6 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
                     name="form-edit"
                     autoComplete="off"
                     layout="vertical"
-                    initialValues={author || undefined}
                 >
                     <Form.Item
                         name="name"
@@ -46,14 +73,6 @@ const EditAuthor: React.FC<ModalEditProps> = ({ open, author, onClose, onFinish 
                     >
                         <Input />
                     </Form.Item>
-
-
-                    <div className="flex justify-end gap-x-[15px]">
-                        <Button onClick={onClose}>Hủy</Button>
-                        <Button type="primary" htmlType="submit">
-                            Lưu
-                        </Button>
-                    </div>
                 </Form>
             </Modal>
         </ConfigProvider>

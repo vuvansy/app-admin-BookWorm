@@ -1,44 +1,48 @@
 'use client'
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, ConfigProvider, DatePicker, Divider, Drawer, Form, FormProps, Input, Modal, Row, Select, Space } from 'antd';
+import { App, Button, Col, ConfigProvider, DatePicker, Divider, Drawer, Form, FormProps, Input, Modal, Row, Select, Space } from 'antd';
 
 const { Option } = Select;
 
+interface Props {
+    openAdd: boolean;
+    setOpenAdd: (values: boolean) => void;
+}
 type AddressType = {
-    city?: string;
-    district?: string;
-    ward?: string;
-    specific_address?: string;
+    city: string;
+    district: string;
+    ward: string;
+    specific_address: string;
 };
 type FieldType = {
-    role?: string;
-    fullName?: string;
-    email?: string;
-    phone?: string;
-    address?: AddressType;
-    password?: string;
-    confirmPassword?: string;
+    role: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    address: AddressType;
+    password: string;
+    confirmPassword: string;
 
 };
 
-const ModalAdd = () => {
+const ModalAdd = (props: Props) => {
+    const { openAdd, setOpenAdd } = props;
+    const [isSubmit, setIsSubmit] = useState(false);
+    const { message, modal, notification } = App.useApp();
+    const [form] = Form.useForm();
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log(values)
+        setIsSubmit(true);
+        message.success('Success!');
+        console.log(values);
+        setOpenAdd(false);
+        form.resetFields();
+        setIsSubmit(false);
     };
-    const [open, setOpen] = useState(false);
 
-    const showModal = () => {
-        setOpen(true);
-    };
-
-    const onClose = () => {
-        setOpen(false);
-    };
 
     return (
         <>
-            <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Thêm mới</Button>
             <ConfigProvider
                 theme={{
                     token: {
@@ -48,14 +52,21 @@ const ModalAdd = () => {
             >
                 <Modal
                     title="Thêm Mới Người Dùng"
-                    width={1020}
-                    footer={null}
-                    maskClosable={true}
-                    onCancel={onClose}
-                    open={open}
+                    width={"70vw"}
+                    onOk={() => { form.submit() }}
+                    okText={"Tạo mới"}
+                    cancelText={"Hủy"}
+                    destroyOnClose={true}
+                    maskClosable={false}
+                    onCancel={() => {
+                        form.resetFields();
+                        setOpenAdd(false);
+                    }}
+                    open={openAdd}
                 >
                     <Divider />
                     <Form
+                        form={form}
                         name="form-add"
                         onFinish={onFinish}
                         autoComplete="off"
@@ -100,10 +111,13 @@ const ModalAdd = () => {
                                 label="Ủy Quyền"
                                 className='basis-1/2'
                             >
-                                <Select>
-                                    <Option value="ADMIN">Tài khoản quản trị</Option>
-                                    <Option value="USER">Tài khoản khách hàng</Option>
-                                </Select>
+                                <Select
+                                    options={[
+                                        { value: "ADMIN", label: "Tài Khoản Quản Trị" },
+                                        { value: "USER", label: "Tài Khoản Khách Hàng" },
+
+                                    ]}
+                                />
                             </Form.Item>
                         </div>
                         <div className='flex justify-between gap-x-5'>
@@ -173,13 +187,6 @@ const ModalAdd = () => {
                                     </Col>
                                 </Row>
                             </Form.Item>
-                        </div>
-
-                        <div className='flex justify-end gap-x-[15px]'>
-                            <Button onClick={onClose}>Hủy</Button>
-                            <Button type="primary" htmlType="submit">
-                                Tạo mới
-                            </Button>
                         </div>
                     </Form>
                 </Modal>
