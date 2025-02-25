@@ -61,7 +61,7 @@ const columns: TableColumnsType<Product> = [
 
 const TableFeedback: React.FC<TableFeedbackProps> = ({ data }) => {
   return (
-    <div className="bg-white w rounded-lg p-4">
+    <div className="bg-white w rounded p-4">
       <p className="mb-5 text-body-bold uppercase">Phản Hồi Khách Hàng</p>
       <Table
         columns={columns}

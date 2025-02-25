@@ -57,14 +57,13 @@ const columns: TableColumnsType<Product> = [
 const TableBookWarning: React.FC<TableFeedbackProps> = ({ data }) => {
   const filteredData = data?.filter((item) => item?.quantity <= 5) || [];
   return (
-    <div className="bg-white w rounded-lg p-4">
+    <div className="bg-white w rounded p-4">
       <p className="mb-5 text-body-bold uppercase">Sản Phẩm Sắp Hết</p>
       <Table
         columns={columns}
         dataSource={filteredData}
         pagination={{ pageSize: 5 }}
         rowKey="key"
-        
         size="small"
         className="ant-table-striped mt-5"
       />

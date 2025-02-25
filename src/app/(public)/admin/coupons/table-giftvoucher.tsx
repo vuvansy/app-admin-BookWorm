@@ -105,7 +105,7 @@ const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
 
   return (
     <div>
-      <div className="bg-white w rounded-lg p-4">
+      <div className="bg-white w rounded p-4">
         <h2 className="text-body-bold uppercase">Quản Lý Mã Giảm Giá</h2>
         <div className="flex justify-end pb-5">
           <Button
