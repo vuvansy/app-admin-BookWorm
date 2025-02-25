@@ -1,26 +1,33 @@
 'use client'
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, ConfigProvider, DatePicker, Divider, Drawer, Form, FormProps, Input, Modal, Row, Select, Space } from 'antd';
+import { App, Button, Col, ConfigProvider, DatePicker, Divider, Drawer, Form, FormProps, Input, Modal, Row, Select, Space, UploadProps } from 'antd';
 
 
 interface Props {
-    open: boolean;
-    onClose: () => void;
-    onSubmit: (values: any) => void;
+    openAdd: boolean;
+    setOpenAdd: (values: boolean) => void;
 }
 
 type FieldType = {
     name?: string;
 };
 
-const AddAuthor: React.FC<Props> = ({ open, onClose, onSubmit }) => {
+const AddAuthor = (props: Props) => {
+    const { openAdd, setOpenAdd } = props;
+    const [isSubmit, setIsSubmit] = useState(false);
+    const { message, modal, notification } = App.useApp();
     const [form] = Form.useForm();
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        onSubmit(values);
+        setIsSubmit(true);
+        message.success('Success!');
+        console.log(values);
+        setOpenAdd(false);
         form.resetFields();
-        onClose();
+        setIsSubmit(false);
     };
+
+
 
     return (
         <>
@@ -33,14 +40,21 @@ const AddAuthor: React.FC<Props> = ({ open, onClose, onSubmit }) => {
             >
                 <Modal
                     title="Thêm mới tác giả"
-                    width={600}
-                    footer={null}
-                    maskClosable={true}
-                    onCancel={onClose}
-                    open={open}
+                    width={"40vw"}
+                    onOk={() => { form.submit() }}
+                    okText={"Tạo mới"}
+                    cancelText={"Hủy"}
+                    destroyOnClose={true}
+                    maskClosable={false}
+                    onCancel={() => {
+                        form.resetFields();
+                        setOpenAdd(false);
+                    }}
+                    open={openAdd}
+
                 >
                     <Divider />
-                    <Form form={form} name="form-add" onFinish={onFinish} autoComplete="off" layout="vertical">
+                    <Form form={form} name="form-add" onFinish={onFinish} autoComplete="off" layout="vertical" >
 
                         <Form.Item<FieldType>
                             name="name"
@@ -51,12 +65,12 @@ const AddAuthor: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                         </Form.Item>
 
 
-                        <div className='flex justify-end gap-x-[15px]'>
+                        {/* <div className='flex justify-end gap-x-[15px]'>
                             <Button onClick={onClose}>Hủy</Button>
                             <Button onClick={onClose} type="primary" htmlType="submit">
                                 Tạo mới
                             </Button>
-                        </div>
+                        </div> */}
                     </Form>
                 </Modal>
             </ConfigProvider>

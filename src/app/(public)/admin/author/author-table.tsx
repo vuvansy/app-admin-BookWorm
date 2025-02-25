@@ -1,11 +1,44 @@
 'use client'
 import React, { useState } from "react";
-import { Author } from "./type";
+
 
 import { Button, message, Popconfirm, PopconfirmProps, Space, Table } from "antd";
 import { DeleteTwoTone, EditTwoTone, PlusOutlined } from "@ant-design/icons";
 import AddAuthor from "./add-author";
 import EditAuthor from "./edit-author";
+
+interface Author {
+    id: string;
+    name: string;
+}
+
+const data: Author[] = [
+    {
+        id: "67441ccbdrcaffdsfsdf07",
+        name: "khang",
+    },
+    {
+        id: "67441ccbdrcaffdsfsdf08",
+        name: "tuan",
+    },
+    {
+        id: "67441ccbdrcaffdsfsdf09",
+        name: "sy",
+    },
+    {
+        id: "67441ccbdrcaffdsfsdf01",
+        name: "kha",
+    },
+    {
+        id: "67441ccbdrcaffdsfsdf02",
+        name: "khang",
+    },
+    {
+        id: "67441ccbdrcaffdsfsdf03",
+        name: "tuan",
+    },
+
+];
 
 const confirm: PopconfirmProps["onConfirm"] = (e) => {
     console.log(e);
@@ -16,7 +49,7 @@ const cancel: PopconfirmProps["onCancel"] = (e) => {
     console.log(e);
     message.error("Click on No");
 };
-const AuthorTable = ({ data }: { data: Author[] }) => {
+const AuthorTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
@@ -29,15 +62,6 @@ const AuthorTable = ({ data }: { data: Author[] }) => {
     const onCloseEdit = () => {
         setOpenEdit(false);
         setSelectedAuthor(null);
-    };
-    const onFinishEdit = (values: Author) => {
-        console.log('Edited values:', values);
-        // Trả về giá trị sau khi chỉnh sửa
-        onCloseEdit();
-    };
-    const handleAddAuthor = (values: any) => {
-        console.log('Added values:', values);
-        // Handle the add logic here
     };
 
     const columns = [
@@ -78,7 +102,7 @@ const AuthorTable = ({ data }: { data: Author[] }) => {
     ];
     return (
         <div>
-            <div className="bg-white w rounded-lg p-4">
+            <div className="bg-white w rounded p-4">
                 <p className=" text-body-bold uppercase">Quản Lý Tác Giả</p>
                 <div className="flex justify-end pb-5">
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpenAdd(true)}>Thêm mới</Button>
@@ -97,13 +121,13 @@ const AuthorTable = ({ data }: { data: Author[] }) => {
                     className="ant-table-striped"
                 />
             </div>
-            <AddAuthor open={openAdd} onClose={() => setOpenAdd(false)} onSubmit={handleAddAuthor} />
+            <AddAuthor openAdd={openAdd} setOpenAdd={setOpenAdd} />
 
             <EditAuthor
-                open={openEdit}
+                openEdit={openEdit}
+                setOpenEdit={setOpenEdit}
                 author={selectedAuthor}
-                onClose={onCloseEdit}
-                onFinish={onFinishEdit}
+
             />
         </div>
     );
