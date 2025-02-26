@@ -1,77 +1,158 @@
-import React from "react";
-import { Modal, Form, Input, Button, DatePicker, Divider } from "antd";
-
-interface Props {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (values: any) => void;
+import React, { useState } from "react";
+import {
+  Modal,
+  Form,
+  Input,
+  Button,
+  DatePicker,
+  Divider,
+  FormProps,
+} from "antd";
+import dayjs from "dayjs";
+interface DataType {
+  stt: number;
+  code: string;
+  discount: number;
+  max_value: number;
+  min_order: number;
+  start_date: string;
+  end_date: string;
+  description: string;
 }
 
-const AddGiftVoucherModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
-  const [form] = Form.useForm();
+interface IProps {
+  isAddModalOpen: boolean;
+  setIsAddModalOpen: (v: boolean) => void;
+}
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        const formattedValues = {
-          ...values,
-          start_date: values.start_date.format("YYYY-MM-DD"),
-          end_date: values.end_date.format("YYYY-MM-DD"),
-        };
-        onSubmit(formattedValues);
-        form.resetFields();
-      })
-      .catch((errorInfo) => console.log("Lỗi:", errorInfo));
+const AddGiftVoucherModal = (props: IProps) => {
+  const { isAddModalOpen, setIsAddModalOpen } = props;
+  const [form] = Form.useForm();
+  const [isSubmit, setIsSubmit] = useState(false);
+
+  const onFinish: FormProps<DataType>["onFinish"] = async (values) => {
+    setIsSubmit(true);
+    console.log(values);
+    setIsSubmit(false);
   };
 
   return (
     <Modal
       title="Thêm Mới Mã Giảm Giá"
-      open={open}
-      onCancel={onClose}
+      open={isAddModalOpen}
+      onOk={() => {
+        form.submit();
+      }}
+      onCancel={() => {
+        form.resetFields();
+        setIsAddModalOpen(false);
+      }}
+      okText={"Tạo mới"}
+      cancelText={"Hủy"}
+      width={"40vw"}
       destroyOnClose={true}
       maskClosable={false}
-      footer={[
-        <Button key="cancel" onClick={onClose}>
-          Hủy
-        </Button>,
-        <Button key="submit" type="primary" onClick={handleOk}>
-          Tạo mới
-        </Button>,
-      ]}
     >
       <Divider />
-      <Form form={form} layout="vertical">
+      <Form form={form} onFinish={onFinish} layout="vertical">
+        <div className="flex gap-5">
+          <Form.Item
+            className="basis-1/2 !mb-5"
+            label="Mã Giảm"
+            name="code"
+            rules={[{ required: true, message: "Vui lòng nhập mã giảm" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            className="basis-1/2 !mb-5"
+            label="Phần trăm giảm %"
+            name="discount"
+            rules={[
+              { required: true, message: "Vui lòng nhập phần trăm giảm giá" },
+            ]}
+          >
+            <Input type="number" />
+          </Form.Item>
+        </div>
+        <div className="flex gap-5">
+          <Form.Item
+            className="basis-1/2 !mb-5"
+            label="Giá Trị Tối Đa"
+            name="max_value"
+            rules={[
+              { required: true, message: "Vui lòng nhập giá trị tối đa" },
+            ]}
+          >
+            <Input
+              type="number"
+              suffix={
+                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
+                  đ
+                </span>
+              }
+              className="text-right !pr-0 !py-0"
+            />
+          </Form.Item>
+          <Form.Item
+            className="basis-1/2 !mb-5"
+            label="Đơn Hàng Tối Thiểu"
+            name="min_order"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập đơn hàng tối thiểu",
+              },
+            ]}
+          >
+            <Input
+              type="number"
+              suffix={
+                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
+                  đ
+                </span>
+              }
+              className="text-right !pr-0 !py-0"
+            />
+          </Form.Item>
+        </div>
+        <div className="flex gap-5">
+          <Form.Item
+            className="basis-1/2 !mb-5"
+            label="Ngày bắt đầu"
+            name="start_date"
+            rules={[{ required: true, message: "Vui lòng nhập ngày bắt đầu" }]}
+          >
+            <DatePicker
+              format="DD-MM-YYYY"
+              className="w-full "
+              value={dayjs()}
+            />
+          </Form.Item>
+          <Form.Item
+            className="basis-1/2 !mb-5"
+            label="Ngày kết thúc"
+            name="end_date"
+            rules={[{ required: true, message: "Vui lòng nhập ngày kết thúc" }]}
+          >
+            <DatePicker
+              format="DD-MM-YYYY"
+              className="w-full"
+              value={dayjs()}
+            />
+          </Form.Item>
+        </div>
         <Form.Item
-          label="Mã Giảm"
-          name="code"
-          rules={[{ required: true, message: "Vui lòng nhập mã giảm" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Phần trăm giảm %"
-          name="discount"
+          label="Mô Tả Mã Giảm Giá"
+          name="description"
           rules={[
-            { required: true, message: "Vui lòng nhập phần trăm giảm giá" },
+            {
+              required: true,
+              message: "Vui lòng nhập mô tả mã giảm giá",
+            },
           ]}
         >
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item
-          label="Ngày bắt đầu"
-          name="start_date"
-          rules={[{ required: true, message: "Vui lòng nhập ngày bắt đầu" }]}
-        >
-          <DatePicker format="DD-MM-YYYY" className="w-full" />
-        </Form.Item>
-        <Form.Item
-          label="Ngày kết thúc"
-          name="end_date"
-          rules={[{ required: true, message: "Vui lòng nhập ngày kết thúc" }]}
-        >
-          <DatePicker format="DD-MM-YYYY" className="w-full" />
+          <Input.TextArea rows={2} />
         </Form.Item>
       </Form>
     </Modal>

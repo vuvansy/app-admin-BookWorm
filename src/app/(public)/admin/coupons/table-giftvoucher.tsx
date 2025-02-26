@@ -11,12 +11,17 @@ interface DataType {
   stt: number;
   code: string;
   discount: number;
+  max_value: number;
+  min_order: number;
   start_date: string;
   end_date: string;
+  description: string;
 }
+
 interface TableGiftProps {
   data: DataType[];
 }
+
 const confirm: PopconfirmProps["onConfirm"] = (e) => {
   console.log(e);
   message.success("Click on Yes");
@@ -26,20 +31,14 @@ const cancel: PopconfirmProps["onCancel"] = (e) => {
   console.log(e);
   message.error("Click on No");
 };
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("vi-VN").format(value) + " đ";
+};
 const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editRecord, setEditRecord] = useState<DataType | null>(null);
-
-  const handleAddVoucher = (values: any) => {
-    console.log("Dữ liệu thêm mới:", values);
-    setIsAddModalOpen(false);
-  };
-
-  const handleEditVoucher = (values: any) => {
-    console.log("Dữ liệu chỉnh sửa:", values);
-    setIsEditModalOpen(false);
-  };
 
   const handleOpenEditModal = (record: DataType) => {
     setEditRecord(record);
@@ -52,29 +51,53 @@ const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
       title: "Mã Giảm Giá",
       dataIndex: "code",
       key: "code",
+      align: "center",
       render: (value: string) => <>#{value}</>,
     },
     {
       title: "Giảm Giá",
       dataIndex: "discount",
       key: "discount",
+      align: "center",
       render: (value: number) => <>{value}%</>,
+    },
+    {
+      title: "Giá Trị Tối Đa",
+      align: "center",
+      dataIndex: "max_value",
+      key: "max_value",
+      render: (value: number) => <>{formatCurrency(value)}</>,
+    },
+    {
+      title: "Đơn Hàng Tối Thiểu",
+      align: "center",
+      dataIndex: "min_order",
+      key: "min_order",
+      render: (value: number) => <>{formatCurrency(value)}</>,
     },
     {
       title: "Ngày Bắt Đầu",
       dataIndex: "start_date",
       key: "start_date",
+      align: "center",
       render: (text) => dayjs(text).format("DD-MM-YYYY"),
     },
     {
       title: "Ngày Kết Thúc",
       dataIndex: "end_date",
       key: "end_date",
+      align: "center",
       render: (text) => dayjs(text).format("DD-MM-YYYY"),
+    },
+    {
+      title: "Mô Tả",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Thao Tác",
       key: "action",
+      align: "center",
       render: (_, record) => (
         <Space size="middle">
           {
@@ -125,15 +148,16 @@ const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
         />
       </div>
       <AddGiftVoucherModal
-        open={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSubmit={handleAddVoucher}
+        isAddModalOpen={isAddModalOpen}
+        setIsAddModalOpen={setIsAddModalOpen}
       />
       <EditGiftVoucherModal
-        open={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onSubmit={handleEditVoucher}
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
         record={editRecord}
+        onSubmit={(values) => {
+          console.log("Dữ liệu sau khi chỉnh sửa:", values);
+        }}
       />
     </div>
   );
