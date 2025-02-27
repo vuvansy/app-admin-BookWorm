@@ -14,12 +14,11 @@ const onFinishFailed = (errorInfo: any) => {
 
 type FieldType = {
     email?: string;
-    password?: string;
 };
 
-const LoginForm = () => (
+const ForgotPasswordForm = () => (
     <div className="w-full max-w-[800px] mx-auto mt-5">
-        <div className=" text-heading3  flex items-center justify-center">Đăng Nhập</div>
+        <div className=" text-heading3  flex items-center justify-center">Quên Mật Khẩu</div>
         <Form
             name="basic"
             // labelCol={{ span: 8 }}
@@ -40,20 +39,7 @@ const LoginForm = () => (
                 <Input />
             </Form.Item>
 
-            <Form.Item<FieldType>
-                label="Mật Khẩu"
-                name="password"
-                rules={[{ required: true, message: 'Không được để trống Password!' }]}
-            >
-                <Input.Password />
-            </Form.Item>
-            <Button type="primary" danger htmlType="submit" className='w-full'>Đăng Nhập</Button>
-            <div className=' my-[10px] text-body1 items-center flex justify-between'>
-                <span>Bạn chưa có tài khoản? <Link href="/register" className='text-red1'>Đăng ký ngay</Link></span>
-            </div>
-            <div className=' mb-[10px] text-body1 items-center flex justify-between'>
-                <Link href="/forgot-password" className='text-red1'>Quên mật khẩu</Link>
-            </div>
+            <Button type="primary" danger htmlType="submit" className='w-full'>Gửi Yêu Cầu</Button>
         </Form>
     </div>
 
@@ -62,6 +48,6 @@ const LoginForm = () => (
 
 );
 
-export default LoginForm;
+export default ForgotPasswordForm;
 
 

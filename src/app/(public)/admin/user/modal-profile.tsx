@@ -1,8 +1,9 @@
 'use client'
 
-import { ConfigProvider, Drawer, Image } from "antd";
+import { Button, ConfigProvider, Drawer, Image } from "antd";
 import { User } from "./user-table";
 import React, { useState } from "react";
+import Link from "next/link";
 
 interface UserDrawerProps {
     open: boolean;
@@ -11,6 +12,7 @@ interface UserDrawerProps {
 }
 
 const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
+
     return (
 
         <ConfigProvider
@@ -62,7 +64,7 @@ const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
                                     {`${user.address.specific_address}, ${user.address.ward}, ${user.address.district}, ${user.address.city}`}
                                 </div>
                             </div>
-                            <div className="w-full flex">
+                            {/* <div className="w-full flex">
                                 <div className="flex-1 flex">
                                     <div className="basis-5/12 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Ngày Tạo</div>
                                     <div className="basis-7/12 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">{user.createdAt}</div>
@@ -71,6 +73,13 @@ const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
                                     <div className="basis-5/12 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Ngày Cập Nhật</div>
                                     <div className="basis-7/12 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">{user.updatedAt}</div>
                                 </div>
+                            </div> */}
+                            <div className="w-full flex justify-start mt-5">
+                                <Button type="primary"  >
+                                    <Link href={`/admin/order/${user.id}`}>
+                                        Lịch Sử Đơn Hàng
+                                    </Link>
+                                </Button>
                             </div>
                         </div>
                     </div>

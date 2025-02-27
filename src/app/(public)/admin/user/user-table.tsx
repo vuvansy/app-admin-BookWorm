@@ -216,23 +216,10 @@ const UserTable = () => {
         },
         {
             title: 'Thao Tác',
+            align: 'center' as 'center',
             render: (_: any, record: User) => (
-                <Space size="middle">
-                    {<EditTwoTone twoToneColor={'#f57800'} onClick={() => showEdit(record)} className="px-[10px]" />}
+                <EditTwoTone twoToneColor={'#f57800'} onClick={() => showEdit(record)} className="px-[10px]" />
 
-                    <Popconfirm
-                        placement="leftTop"
-                        title="Delete the task"
-                        description="Bạn có chắc chắn muốn xóa người dùng này không?"
-                        onConfirm={confirm}
-                        onCancel={cancel}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <span className="cursor-pointer">{<DeleteTwoTone twoToneColor={'#ff4d4f'} />}</span>
-                    </Popconfirm>
-
-                </Space>
             ),
         },
     ];
