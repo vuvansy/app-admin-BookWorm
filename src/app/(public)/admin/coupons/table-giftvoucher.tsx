@@ -62,7 +62,7 @@ const TableGiftVoucher: React.FC<TableGiftProps> = ({ data }) => {
       render: (value: number) => <>{value}%</>,
     },
     {
-      title: "Giá Trị Tối Đa",
+      title: "Giá Giảm Tối Đa",
       align: "center",
       dataIndex: "max_value",
       key: "max_value",
