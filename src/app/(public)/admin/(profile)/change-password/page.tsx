@@ -1,9 +1,12 @@
+import ChangePasswordForm from "./form-change-password";
 
 
-import React from 'react'
-
-export default function page() {
+const ChangePasswordPage = () => {
     return (
-        <div>page</div>
+        <div className="">
+            <ChangePasswordForm />
+        </div>
     )
 }
+
+export default ChangePasswordPage;

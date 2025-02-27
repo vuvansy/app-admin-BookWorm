@@ -1,9 +1,14 @@
+import AccountForm from "./form-account";
 
 
-import React from 'react'
 
-export default function page() {
+
+const AccountPage = () => {
   return (
-    <div>page</div>
+    <div className="">
+      <AccountForm />
+    </div>
   )
 }
+
+export default AccountPage;

@@ -13,13 +13,16 @@ const onFinishFailed = (errorInfo: any) => {
 };
 
 type FieldType = {
+    fullname?: string;
     email?: string;
     password?: string;
+    confirmPassword?: string;
+    remember?: string;
 };
 
-const LoginForm = () => (
+const RegisterForm = () => (
     <div className="w-full max-w-[800px] mx-auto mt-5">
-        <div className=" text-heading3  flex items-center justify-center">Đăng Nhập</div>
+        <div className=" text-heading3  flex items-center justify-center">Đăng Ký</div>
         <Form
             name="basic"
             // labelCol={{ span: 8 }}
@@ -31,7 +34,13 @@ const LoginForm = () => (
             layout="vertical"
             autoComplete="off"
         >
-
+            <Form.Item<FieldType>
+                label="Họ và Tên"
+                name="fullname"
+                rules={[{ required: true, message: 'Hãy nhập họ và tên!' }]}
+            >
+                <Input />
+            </Form.Item>
             <Form.Item<FieldType>
                 label="Email"
                 name="email"
@@ -43,13 +52,20 @@ const LoginForm = () => (
             <Form.Item<FieldType>
                 label="Mật Khẩu"
                 name="password"
-                rules={[{ required: true, message: 'Không được để trống Password!' }]}
+                rules={[{ required: true, message: 'Không được để trống mật khẩu!' }]}
             >
                 <Input.Password />
             </Form.Item>
-            <Button type="primary" danger htmlType="submit" className='w-full'>Đăng Nhập</Button>
-            <div className=' my-[10px] text-body1 items-center flex justify-between'>
-                <span>Bạn chưa có tài khoản? <Link href="/register" className='text-red1'>Đăng ký ngay</Link></span>
+            <Form.Item<FieldType>
+                label="Xác Nhận Mật Khẩu"
+                name="confirmPassword"
+                rules={[{ required: true, message: 'Không được để trống xác nhận mật khẩu!' }]}
+            >
+                <Input.Password />
+            </Form.Item>
+            <Button type="primary" danger htmlType="submit" className='w-full'>Đăng Ký</Button>
+            <div className='h-5 my-[10px] text-body1 items-center flex justify-between'>
+                <span>Bạn đã có tài khoản? <Link href="/login" className='text-red1'>Đăng nhập ngay</Link></span>
             </div>
             <div className=' mb-[10px] text-body1 items-center flex justify-between'>
                 <Link href="/forgot-password" className='text-red1'>Quên mật khẩu</Link>
@@ -62,6 +78,4 @@ const LoginForm = () => (
 
 );
 
-export default LoginForm;
-
-
+export default RegisterForm;

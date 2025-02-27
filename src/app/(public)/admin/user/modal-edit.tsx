@@ -7,19 +7,17 @@ import { User } from './user-table';
 const { Option } = Select;
 
 type AddressType = {
-    city: string;
-    district: string;
-    ward: string;
-    specific_address: string;
+    city?: string;
+    district?: string;
+    ward?: string;
+    specific_address?: string;
 };
 type FieldType = {
     role: string;
     fullName: string;
-    email: string;
+    email?: string;
     phone: string;
-    address: AddressType;
-    password: string;
-    confirmPassword: string;
+    address?: AddressType;
 
 };
 interface Props {
@@ -93,7 +91,6 @@ const ModalEdit = (props: Props) => {
                         <Form.Item<FieldType>
                             name="email"
                             label="Email"
-                            rules={[{ required: true, message: 'Hãy nhập Email!' }]}
                             className='basis-1/2'
                         >
                             <Input disabled />
@@ -131,7 +128,6 @@ const ModalEdit = (props: Props) => {
                                     <Form.Item
                                         name={['address', 'city']}
                                         label="Chọn Tỉnh / Thành Phố"
-                                        rules={[{ required: true, message: 'Hãy chọn tỉnh / thành phố!' }]}
                                     >
                                         <Select placeholder="Chọn một tỉnh / thành phố" allowClear >
                                             <Option value="demo">Demo</Option>
@@ -142,7 +138,6 @@ const ModalEdit = (props: Props) => {
                                     <Form.Item
                                         name={['address', 'district']}
                                         label="Chọn Quận / Huyện"
-                                        rules={[{ required: true, message: 'Hãy chọn quận / huyện!' }]}
                                     >
                                         <Select placeholder="Chọn một quận / huyện" allowClear>
                                             <Option value="demo">Demo</Option>
@@ -153,7 +148,6 @@ const ModalEdit = (props: Props) => {
                                     <Form.Item
                                         name={['address', 'ward']}
                                         label="Chọn Phường / Xã"
-                                        rules={[{ required: true, message: 'Hãy chọn phường / xã!' }]}
                                     >
                                         <Select placeholder="Chọn một phường / xã" allowClear>
                                             <Option value="demo">Demo</Option>
@@ -164,7 +158,6 @@ const ModalEdit = (props: Props) => {
                                     <Form.Item
                                         name={['address', 'specific_address']}
                                         label="Nhập Địa Chỉ Cụ Thể"
-                                        rules={[{ required: true, message: 'Hãy nhập địa chỉ cụ thể!' }]}
                                     >
                                         <Input />
                                     </Form.Item>
