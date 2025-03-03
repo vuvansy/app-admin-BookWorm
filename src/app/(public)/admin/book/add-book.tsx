@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {Modal,Form,Input,InputNumber,Select,Upload,Image,App,Divider,} from "antd";
+import { Modal, Form, Input, InputNumber, Select, Upload, Image, App, Divider, } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import { UploadChangeParam } from "antd/es/upload";
@@ -137,9 +137,10 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onClose, onAdd }) => {
       cancelText="Hủy"
       maskClosable={false}
       destroyOnClose
-      width={"70vw"}
+      width={"60vw"}
+      style={{ top: 20 }}
     >
-       <Divider />
+      <Divider />
       <Form form={form} layout="vertical" className="space-y-4">
         {/* Tên Sách - Nhà Xuất Bản */}
         <div className="grid grid-cols-2 gap-4">

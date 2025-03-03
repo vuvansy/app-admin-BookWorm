@@ -1,7 +1,7 @@
 "use client"
 
-import { ArrowRightOutlined} from "@ant-design/icons";
-import { TableProps, Empty, Table} from 'antd';
+import { ArrowRightOutlined } from "@ant-design/icons";
+import { TableProps, Empty, Table } from 'antd';
 import { BsEyeFill } from "react-icons/bs";
 import Link from "next/link";
 import React, { useState } from 'react';
@@ -180,7 +180,7 @@ const TableOrderWait = () => {
                     pagination={false}
                     size="small"
                     locale={{
-                        emptyText: <Empty style={{ maxHeight: "36px" }}  image={Empty.PRESENTED_IMAGE_SIMPLE} description="Không có đơn hàng nào cần xác nhận" />
+                        emptyText: <Empty style={{ maxHeight: "36px" }} image={Empty.PRESENTED_IMAGE_SIMPLE} description="Không có đơn hàng nào cần xác nhận" />
                     }}
                 />
                 <div className="mt-2 pl-2">
@@ -208,10 +208,10 @@ const TableOrderWait = () => {
                     <div className="flex justify-between my-[10px]">
                         <div className="">
                             <h3 className="font-semibold text-body1 pb-1">Thông Tin Khách Hàng</h3>
-                            <p>Tên: Võ Văn khang</p>
-                            <p>Địa chỉ: 72N đường HT05, HP24, Phường Hiệp Thành, Quận 12, Thành Phố Hồ Chí Minh</p>
-                            <p>SĐT: 0828937376</p>
-                            <p>Email: khangvvps26357.fpt.edu.vn</p>
+                            <p className='pb-1'>Tên: Võ Văn khang</p>
+                            <p className='pb-1'>Địa chỉ: 72N đường HT05, HP24, Phường Hiệp Thành, Quận 12, Thành Phố Hồ Chí Minh</p>
+                            <p className='pb-1'>SĐT: 0828937376</p>
+                            <p className='pb-1'>Email: khangvvps26357.fpt.edu.vn</p>
                         </div>
                         <div>
                             <div className="mb-2">

@@ -48,12 +48,17 @@ export default function AdminLayout({
 
     const items: MenuItem[] = [
         {
-            label: <Link href='/'>Trang chủ</Link>,
+            label: <Link href='/'>Dashboard </Link>,
             key: '/',
             icon: <AppstoreOutlined />
         },
         {
-            label: <Link href='/admin/user'>Người dùng</Link>,
+            label: <Link href='/admin/order'>Đơn Hàng</Link>,
+            key: '/admin/order',
+            icon: <DollarCircleOutlined />
+        },
+        {
+            label: <Link href='/admin/user'>Người Dùng</Link>,
             key: '/admin/user',
             icon: <UserOutlined />,
         },
@@ -63,37 +68,33 @@ export default function AdminLayout({
             icon: <FileImageOutlined />,
         },
         {
-            label: <Link href='/admin/genre'>Danh mục</Link>,
+            label: <Link href='/admin/genre'>Danh Mục</Link>,
             key: '/admin/genre',
             icon: <FileDoneOutlined />
         },
         {
-            label: <Link href='/admin/book'>Sản phẩm</Link>,
+            label: <Link href='/admin/book'>Sản Phẩm</Link>,
             key: '/admin/book',
             icon: <ReadOutlined />
         },
         {
-            label: <Link href='/admin/author'>Tác giả</Link>,
+            label: <Link href='/admin/author'>Tác Giả</Link>,
             key: '/admin/author',
             icon: <AuditOutlined />
         },
         {
-            label: <Link href='/admin/coupons'>Mã giảm giá</Link>,
+            label: <Link href='/admin/coupons'>Mã Giảm Giá</Link>,
             key: '/admin/coupons',
             icon: <TagsOutlined />
         },
         {
-            label: <Link href='/admin/reviews'>Phản hồi</Link>,
+            label: <Link href='/admin/reviews'>Phản Hồi</Link>,
             key: '/admin/reviews',
             icon: <CommentOutlined />
         },
+
         {
-            label: <Link href='/admin/order'>Đơn hàng</Link>,
-            key: '/admin/order',
-            icon: <DollarCircleOutlined />
-        },
-        {
-            label: <span>Thống kê</span>,
+            label: <span>Thống Kê</span>,
             key: '/admin/statistics',
             icon: <LineChartOutlined />,
             children: [
