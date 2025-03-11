@@ -21,14 +21,15 @@ declare global {
 
     interface IModelPaginate<T> {
         meta: {
-            current: number;
-            pageSize: number;
+            page: number;
+            limit: number;
             pages: number;
             total: number;
         },
         result: T[]
     }
-
+   
+    
     interface ILogin {
         access_token: string;
         user: {
@@ -47,20 +48,48 @@ declare global {
         fullName: string;
     }
 
+    interface Address {
+        city: { key: string; name: string };
+        district: { key: string; name: string };
+        ward: { key: string; name: string };
+        street: { key: string; name: string };
+    }
+
     interface IUser {
-        email: string;
-        phone: string;
+        _id: ObjectId;
         fullName: string;
+        phone: string;
+        email: string;
+        image?: string;
+        address?: Address;
         role: string;
-        avatar: string;
-        id: string;
+        password: string;
+        isBlocked?: boolean;
+        isActive?: boolean;
+        reset_token?: string | null;
+        createdAt?: Date;
+        updatedAt?: Date;
     }
 
     interface IFetchAccount {
         user: IUser
     }
 
-    
+    interface IGenre {
+        _id: string;
+        name: string;
+        image: string;
+    }
+
+    export interface IAuthor {
+        _id: string;
+        name: string;
+        deleted: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }
+
+
     interface IUserTable {
         _id: string;
         fullName: string;
@@ -79,25 +108,74 @@ declare global {
         detail: any;
     }
 
+    interface IBook {
+        id: string;
+        id_genre?: IGenre;
+        name: string;
+        image: string;
+        slider?: string[];
+        price_old: number;
+        price_new?: number;
+        quantity?: number;
+        description?: string;
+        status?: number;
+        weight?: number;
+        size?: string;
+        publishers?: string;
+        authors?: IAuthor[];
+        year?: number;
+        page_count?: number;
+        book_cover?: string;
+        rating?: number
+        createdAt?: Date;
+        updatedAt?: Date;
+    }
+
     interface IBookTable {
         _id: string;
-        thumbnail: string;
-        slider: string[];
-        mainText: string;
-        author: string;
-        price: number;
-        sold: number;
+        id_genre: IGenre;
+        name: string;
+        image: string;
+        slider?: string[];
+        price_old: number;
+        price_new: number;
         quantity: number;
-        category: string;
+        description?: string;
+        status?: number;
+        weight?: number;
+        size?: string;
+        publishers?: string;
+        authors?: IAuthor[];
+        year?: number;
+        page_count?: number;
+        book_cover?: string;
+        rating?: number
         createdAt: Date;
         updatedAt: Date;
     }
 
-    
+
     interface ICart {
         _id: string;
         quantity: number;
         detail: IBookTable;
     }
-   
+
+    interface Ward {
+        Id: string;
+        Name: string;
+    }
+
+    interface District {
+        Id: string;
+        Name: string;
+        Wards: Ward[];
+    }
+
+    interface City {
+        Id: string;
+        Name: string;
+        Districts: District[];
+    }
+
 }
