@@ -20,19 +20,26 @@ const FilterBook: React.FC<{
       form={form}
       layout="horizontal"
       onFinish={(values) => {
-        // console.log("Form Submitted", values);
-        onSearch(values);
+        const trimmedValues = {
+          ...values,
+          bookName: values.bookName?.trim() || "",
+        };
+        onSearch(trimmedValues);
       }}
-      initialValues={{ bookName: "", author: "" }}
+      initialValues={{ bookName: "" }}
     >
       <div className="flex justify-between gap-x-4">
         <div className="basis-2/3 flex gap-x-[100px]">
           <Form.Item
             name="bookName"
             label="Tên Sách"
-            className="flex-1 text-body1 "
+            className="flex-1 text-body1"
           >
-            <Input placeholder="Vui lòng nhập" className="w-[300px]" />
+            <Input
+              placeholder="Vui lòng nhập"
+              className="w-[300px]"
+              onPressEnter={() => form.submit()}
+            />
           </Form.Item>
         </div>
 
@@ -46,7 +53,11 @@ const FilterBook: React.FC<{
           >
             Tải Lại
           </Button>
-          <Button type="primary" onClick={() => form.submit()} className="bg-blue-500">
+          <Button
+            type="primary"
+            htmlType="submit" // Đúng cách để kích hoạt `onFinish`
+            className="bg-blue-500"
+          >
             Tìm Kiếm
           </Button>
         </div>

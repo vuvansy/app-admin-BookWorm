@@ -21,13 +21,14 @@ declare global {
 
     interface IModelPaginate<T> {
         meta: {
-            current: number;
-            pageSize: number;
+            page: number;
+            limit: number;
             pages: number;
             total: number;
         },
         result: T[]
     }
+
 
     interface ILogin {
         access_token: string;
@@ -45,6 +46,13 @@ declare global {
         _id: string;
         email: string;
         fullName: string;
+    }
+
+    interface Address {
+        city: { key: string; name: string };
+        district: { key: string; name: string };
+        ward: { key: string; name: string };
+        street: { key: string; name: string };
     }
 
     interface IUser {
@@ -67,12 +75,20 @@ declare global {
         user: IUser
     }
 
-    interface Address {
-        city: { key: string; name: string };
-        district: { key: string; name: string };
-        ward: { key: string; name: string };
-        street?: string;
+    interface IGenre {
+        _id: string;
+        name: string;
+        image: string;
     }
+
+    export interface IAuthor {
+        _id: string;
+        name: string;
+        deleted: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }
+
 
     interface IUserTable {
         _id: string;
@@ -96,16 +112,48 @@ declare global {
         detail: any;
     }
 
+    interface IBook {
+        id: string;
+        id_genre?: IGenre;
+        name: string;
+        image: string;
+        slider?: string[];
+        price_old: number;
+        price_new?: number;
+        quantity?: number;
+        description?: string;
+        status?: number;
+        weight?: number;
+        size?: string;
+        publishers?: string;
+        authors?: IAuthor[];
+        year?: number;
+        page_count?: number;
+        book_cover?: string;
+        rating?: number
+        createdAt?: Date;
+        updatedAt?: Date;
+    }
+
     interface IBookTable {
         _id: string;
-        thumbnail: string;
-        slider: string[];
-        mainText: string;
-        author: string;
-        price: number;
-        sold: number;
+        id_genre: IGenre;
+        name: string;
+        image: string;
+        slider?: string[];
+        price_old: number;
+        price_new: number;
         quantity: number;
-        category: string;
+        description?: string;
+        status?: number;
+        weight?: number;
+        size?: string;
+        publishers?: string;
+        authors?: IAuthor[];
+        year?: number;
+        page_count?: number;
+        book_cover?: string;
+        rating?: number
         createdAt: Date;
         updatedAt: Date;
     }
@@ -139,6 +187,5 @@ declare global {
         Name: string;
         Districts: District[];
     }
-
 
 }

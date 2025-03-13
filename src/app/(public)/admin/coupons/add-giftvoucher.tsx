@@ -33,7 +33,7 @@ const AddGiftVoucherModal = (props: IProps) => {
   const onFinish: FormProps<DataType>["onFinish"] = async (values) => {
     setIsSubmit(true);
     console.log(values);
-    setIsSubmit(false);
+    // setIsSubmit(false);
   };
 
   return (
