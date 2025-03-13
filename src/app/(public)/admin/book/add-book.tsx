@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {Modal,Form,Input,InputNumber,Select,Upload,Image,Divider,message,App,} from "antd";
+import { Modal, Form, Input, InputNumber, Select, Upload, Image, Divider, message, App, } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import { UploadChangeParam } from "antd/es/upload";
@@ -249,14 +249,11 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
             className="!mb-0"
             rules={[{ required: true, message: "Vui lòng nhập giá cũ" }]}
           >
-            <Input
-              type="number"
-              suffix={
-                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
-                  đ
-                </span>
-              }
-              className="text-right !pr-0 !py-0"
+           <InputNumber
+              min={1}
+              style={{ width: '100%' }}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              addonAfter=" đ"
             />
           </Form.Item>
           <Form.Item
@@ -265,14 +262,11 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
             className="!mb-0"
             rules={[{ required: true, message: "Vui lòng nhập giá mới" }]}
           >
-            <Input
-              type="number"
-              suffix={
-                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
-                  đ
-                </span>
-              }
-              className="text-right !pr-0 !py-0"
+            <InputNumber
+              min={1}
+              style={{ width: '100%' }}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              addonAfter=" đ"
             />
           </Form.Item>
           <Form.Item
@@ -381,8 +375,8 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
           >
             <Input className="w-full" />
           </Form.Item>
-           <div></div>
-           <div></div>
+          <div></div>
+          <div></div>
         </div>
 
         {/* Mô Tả */}

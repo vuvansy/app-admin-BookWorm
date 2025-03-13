@@ -55,7 +55,7 @@ const EditBook: React.FC<EditBookProps> = ({
   const [loadingSlider, setLoadingSlider] = useState(false);
 
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string>(""); 
+  const [previewImage, setPreviewImage] = useState<string>("");
 
   const [authors, setAuthors] = useState<IAuthor[]>([]);
   const [genres, setGenres] = useState<IGenre[]>([]);
@@ -178,22 +178,22 @@ const EditBook: React.FC<EditBookProps> = ({
     if (visible && initialBook) {
       const thumbnailFileList: UploadFile[] = initialBook.image
         ? [
-            {
-              uid: "-1",
-              name: "thumbnail.png",
-              status: "done",
-              url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${initialBook.image}`,
-            },
-          ]
+          {
+            uid: "-1",
+            name: "thumbnail.png",
+            status: "done",
+            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${initialBook.image}`,
+          },
+        ]
         : [];
       const sliderFileList: UploadFile[] =
         initialBook.slider && initialBook.slider.length > 0
           ? initialBook.slider.map((img, index) => ({
-              uid: index.toString(),
-              name: `slider-${index}.png`,
-              status: "done",
-              url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${img}`,
-            }))
+            uid: index.toString(),
+            name: `slider-${index}.png`,
+            status: "done",
+            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${img}`,
+          }))
           : [];
 
       form.setFieldsValue({
@@ -267,6 +267,7 @@ const EditBook: React.FC<EditBookProps> = ({
       cancelText="Hủy"
       maskClosable={false}
       destroyOnClose
+      style={{ top: 20 }}
       width={"70vw"}
     >
       <Divider />
@@ -292,14 +293,11 @@ const EditBook: React.FC<EditBookProps> = ({
         {/* Giá Cũ - Giá Mới - Số Lượng */}
         <div className="grid grid-cols-3 gap-4">
           <Form.Item label="Giá Cũ" name="price_old">
-            <Input
-              type="number"
-              suffix={
-                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
-                  đ
-                </span>
-              }
-              className="text-right !pr-0 !py-0"
+            <InputNumber
+              min={1}
+              style={{ width: '100%' }}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              addonAfter=" đ"
             />
           </Form.Item>
           <Form.Item
@@ -307,14 +305,11 @@ const EditBook: React.FC<EditBookProps> = ({
             name="price_new"
             rules={[{ required: true, message: "Vui lòng nhập giá" }]}
           >
-            <Input
-              type="number"
-              suffix={
-                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
-                  đ
-                </span>
-              }
-              className="text-right !pr-0 !py-0"
+            <InputNumber
+              min={1}
+              style={{ width: '100%' }}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              addonAfter=" đ"
             />
           </Form.Item>
           <Form.Item
