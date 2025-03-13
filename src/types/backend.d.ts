@@ -28,8 +28,8 @@ declare global {
         },
         result: T[]
     }
-   
-    
+
+
     interface ILogin {
         access_token: string;
         user: {
@@ -56,15 +56,15 @@ declare global {
     }
 
     interface IUser {
-        _id: ObjectId;
+        _id: string;
         fullName: string;
         phone: string;
-        email: string;
+        email?: string;
         image?: string;
         address?: Address;
-        role: string;
-        password: string;
+        role: "USER" | "ADMIN";
         isBlocked?: boolean;
+        password: string;
         isActive?: boolean;
         reset_token?: string | null;
         createdAt?: Date;
@@ -93,13 +93,17 @@ declare global {
     interface IUserTable {
         _id: string;
         fullName: string;
-        email: string;
         phone: string;
-        role: string;
-        avatar: string;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        email?: string;
+        image?: string;
+        address?: Address;
+        role: "USER" | "ADMIN";
+        isBlocked?: boolean;
+        password: string;
+        isActive?: boolean;
+        reset_token?: string | null;
+        createdAt?: Date;
+        updatedAt?: Date;
     }
 
     interface IResponseImport {
@@ -154,13 +158,19 @@ declare global {
         updatedAt: Date;
     }
 
+    interface IAuthorTable {
+        _id: string;
+        name: string;
+        delete: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }
 
     interface ICart {
         _id: string;
         quantity: number;
         detail: IBookTable;
     }
-
     interface Ward {
         Id: string;
         Name: string;
