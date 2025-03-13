@@ -19,7 +19,7 @@ type FieldType = {
 };
 
 const ChangePasswordForm = () => (
-    <div className="container flex justify-center bg-white py-7 rounded mt-1">
+    <div className=" flex justify-center bg-white py-7 rounded mt-1">
         <div className=' w-[40vw] mx-auto'>
             <div className=" text-heading3  flex items-center justify-center">Đổi Mật Khẩu</div>
             <Form
@@ -66,5 +66,3 @@ const ChangePasswordForm = () => (
 );
 
 export default ChangePasswordForm;
-
-

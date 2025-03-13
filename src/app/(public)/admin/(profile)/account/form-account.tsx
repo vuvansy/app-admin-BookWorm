@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button, Checkbox, Col, Form, Input, Row, Select, Image, App, Upload } from 'antd';
-
+import { PlusOutlined, ImportOutlined, ExportOutlined, EditTwoTone, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -37,6 +37,11 @@ const AccountForm = () => {
         reader.readAsDataURL(info.file);
     };
 
+    const handleRemove = () => {
+        setImageUrl(null);
+        setFile(null);
+    };
+
     const handleSubmit = (values: any) => {
         const formData = { ...values, image: file };
         console.log('Form Data:', formData);
@@ -52,7 +57,7 @@ const AccountForm = () => {
 
     return (
 
-        <div className="container bg-white py-7 rounded mt-1 mx-auto">
+        <div className=" bg-white py-7 rounded mt-1 mx-auto">
             <div className=' w-[80vw] mx-auto'>
                 <div className=" text-heading3  flex items-center justify-center">Thông Tin Cá Nhân</div>
                 <Form
@@ -65,13 +70,22 @@ const AccountForm = () => {
                 >
 
                     <div className='flex justify-between'>
-                        <div className='basis-1/6 h-60 ml-5 rounded-[10px] shadow-2xl drop-shadow-2xl flex align-center justify-center'>
+                        <div className='basis-1/6 h-60 ml-5 rounded-[10px] border-2 flex align-center justify-center'>
                             <Form.Item
                                 name="image"
                             >
                                 <div>
-                                    <Image src={typeof imageUrl === 'string' ? imageUrl : defaultAvatarUrl} alt="Uploaded" width={130} height={130} className="mt-4 rounded-full "
-                                        preview={{ maskClassName: "rounded-full w-[100%] h-[100%] mt-4" }}
+                                    <Image src={typeof imageUrl === 'string' ? imageUrl : defaultAvatarUrl} alt="Uploaded" width={130} height={130} className="mt-4 rounded-full"
+
+                                        preview={{
+                                            maskClassName: "rounded-full w-[100%] h-[100%] mt-4",
+                                            mask: (
+                                                <div className="flex justify-center items-center gap-x-10">
+                                                    <EyeOutlined />
+                                                    <DeleteOutlined onClick={handleRemove} />
+                                                </div>
+                                            )
+                                        }}
                                     />
                                     <div className='flex justify-center mt-[45px] '>
                                         <Upload beforeUpload={() => false} showUploadList={false} onChange={handleUpload}>
@@ -97,7 +111,6 @@ const AccountForm = () => {
                                 <Form.Item<FieldType>
                                     name="email"
                                     label="Email"
-                                    rules={[{ required: true, message: 'Hãy nhập Email!' }]}
                                     className='basis-1/2'
                                 >
                                     <Input />
@@ -165,5 +178,3 @@ const AccountForm = () => {
     );
 };
 export default AccountForm;
-
-
