@@ -20,14 +20,37 @@ const AddAuthor = (props: Props) => {
     const [form] = Form.useForm();
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
-        message.success('Success!');
         console.log(values);
         setOpenAdd(false);
         form.resetFields();
         setIsSubmit(false);
+        try {
+            const { name } = values;
+            const data = { name };
+            console.log('data:', data);
+
+
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                }
+            )
+            const d = await res.json();
+            if (d.data) {
+                //success
+                message.success("Thêm tác giả thành công.");
+            } else {
+                message.error(d.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
-
-
 
     return (
         <>
