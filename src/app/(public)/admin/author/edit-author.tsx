@@ -6,14 +6,10 @@ import { Form, Input, Button, ConfigProvider, Modal, Divider, FormProps, App } f
 type FieldType = {
     name?: string;
 };
-interface Author {
-    id: string;
-    name: string;
-}
 interface Props {
     openEdit: boolean;
     setOpenEdit: (values: boolean) => void;
-    author: Author | null;
+    author: IAuthorTable | null;
 
 }
 
@@ -30,7 +26,6 @@ const EditAuthor = (props: Props) => {
     }, [author, form]);
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
-        message.success('Success!');
         console.log(values);
         setOpenEdit(false);
         form.resetFields();

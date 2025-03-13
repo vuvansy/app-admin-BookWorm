@@ -1,44 +1,14 @@
 'use client'
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 import { Button, message, Popconfirm, PopconfirmProps, Space, Table } from "antd";
 import { DeleteTwoTone, EditTwoTone, PlusOutlined } from "@ant-design/icons";
 import AddAuthor from "./add-author";
 import EditAuthor from "./edit-author";
+import { sendRequest } from "@/utils/api";
+import { ColumnsType } from "antd/es/table";
 
-interface Author {
-    id: string;
-    name: string;
-}
-
-const data: Author[] = [
-    {
-        id: "67441ccbdrcaffdsfsdf07",
-        name: "khang",
-    },
-    {
-        id: "67441ccbdrcaffdsfsdf08",
-        name: "tuan",
-    },
-    {
-        id: "67441ccbdrcaffdsfsdf09",
-        name: "sy",
-    },
-    {
-        id: "67441ccbdrcaffdsfsdf01",
-        name: "kha",
-    },
-    {
-        id: "67441ccbdrcaffdsfsdf02",
-        name: "khang",
-    },
-    {
-        id: "67441ccbdrcaffdsfsdf03",
-        name: "tuan",
-    },
-
-];
 
 const confirm: PopconfirmProps["onConfirm"] = (e) => {
     console.log(e);
@@ -52,35 +22,66 @@ const cancel: PopconfirmProps["onCancel"] = (e) => {
 const AuthorTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
-    const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 5;
-    const showEdit = (author: Author) => {
+    const [author, setAuthor] = useState<IAuthorTable[]>([]);
+    const [selectedAuthor, setSelectedAuthor] = useState<IAuthorTable | null>(null);
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const pageSize = 5;
+    useEffect(() => {
+        const fetchAuthor = async () => {
+            try {
+                const res = await sendRequest<IBackendRes<IAuthorTable[]>>({
+                    url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author`,
+                    method: "GET",
+                });
+                console.log(res.data);
+                if (res.data) {
+                    const sortedData = [...res.data].sort((a, b) => {
+                        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                        return dateB - dateA; // Sắp xếp giảm dần (mới nhất trước)
+                    });
+                    setAuthor(sortedData);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchAuthor();
+
+    }, []);
+    const showEdit = (author: IAuthorTable) => {
         setSelectedAuthor(author);
         setOpenEdit(true);
     };
+    useEffect(() => {
+        if (!openEdit) {
+            setSelectedAuthor(null);
+        }
+    }, [openEdit]);
     const onCloseEdit = () => {
         setOpenEdit(false);
         setSelectedAuthor(null);
     };
 
-    const columns = [
+    const columns: ColumnsType<IAuthorTable> = [
         {
             title: 'STT',
             dataIndex: 'stt',
             align: 'center' as 'center',
-            render: (_: any, __: Author, index: number) => (currentPage - 1) * pageSize + index + 1,
+            render: (_: any, __: IAuthorTable, index: number) => index + 1,
+            // => (currentPage - 1) * pageSize + index + 1,
         },
         {
             title: 'Tên Tác Giả',
             dataIndex: 'name',
             align: 'center' as 'center',
+            render: (name: string) => <div>{name}</div>,
         },
         {
             title: 'Thao Tác',
             align: 'center' as 'center',
             width: 600,
-            render: (_: any, record: Author) => (
+            render: (_: any, record) => (
                 <Space size="middle">
                     {<EditTwoTone twoToneColor={'#f57800'} onClick={() => showEdit(record)} className="px-[10px]" />}
 
@@ -110,14 +111,14 @@ const AuthorTable = () => {
 
                 <Table
                     columns={columns}
-                    dataSource={data}
-                    pagination={{
-                        pageSize,
-                        current: currentPage,
-                        onChange: (page) => setCurrentPage(page),
-                    }}
+                    dataSource={author}
+                    // pagination={{
+                    //     pageSize,
+                    //     current: currentPage,
+                    //     onChange: (page) => setCurrentPage(page),
+                    // }}
                     size="small"
-                    rowKey="id"
+                    rowKey="_id"
                     className="ant-table-striped"
                 />
             </div>
