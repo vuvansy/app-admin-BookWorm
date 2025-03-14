@@ -51,7 +51,7 @@ const TableGenre: React.FC = () => {
         const updatedGenres = resGenre.data.result.map((genre) => {
           const count = resBook.data?.filter(
             (book) => book.id_genre?._id === genre._id
-          ).length;
+          ).length || 0;
           return { ...genre, productCount: count };
         });
         setGenres(updatedGenres);
@@ -93,6 +93,11 @@ const TableGenre: React.FC = () => {
 
 
     const handleDeleteGenre = async (genre: IGenre) => {
+      if (genre.productCount >= 1) {
+        message.error("Không thể xóa danh mục này vì nó có sản phẩm.");
+        return;
+      }
+    
     try {
       await sendRequest({
         url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/genre/${genre._id}`,

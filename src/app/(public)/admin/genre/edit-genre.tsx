@@ -160,9 +160,15 @@ const EditGenre: React.FC<EditGenreProps> = ({
       const values = await form.validateFields();
       const thumbnailList = values.thumbnail;
       let thumbnailUrl = "";
+      
       if (Array.isArray(thumbnailList) && thumbnailList.length > 0) {
-        thumbnailUrl = thumbnailList[0]?.url || "";
+        if (thumbnailList[0].originFileObj) {
+          thumbnailUrl = thumbnailList[0].url || "";
+        } else {
+          thumbnailUrl = genre?.image || "";
+        }
       }
+
       const payload = {
         name: values.name,
         image: thumbnailUrl,
@@ -188,6 +194,7 @@ const EditGenre: React.FC<EditGenreProps> = ({
             _id: genre?._id || "",
             name: values.name,
             image: thumbnailUrl,
+            productCount: genre?.productCount ?? 0,
           };
 
       onSubmit(updatedGenre);

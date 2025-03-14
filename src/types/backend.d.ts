@@ -76,6 +76,7 @@ declare global {
     }
 
     interface IGenre {
+        productCount: number;
         _id: string;
         name: string;
         image: string;
