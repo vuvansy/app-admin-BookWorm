@@ -10,15 +10,6 @@ import { sendRequest } from "@/utils/api";
 import { ColumnsType } from "antd/es/table";
 
 
-const confirm: PopconfirmProps["onConfirm"] = (e) => {
-    console.log(e);
-    message.success("Click on Yes");
-};
-
-const cancel: PopconfirmProps["onCancel"] = (e) => {
-    console.log(e);
-    message.error("Click on No");
-};
 const AuthorTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
@@ -26,26 +17,22 @@ const AuthorTable = () => {
     const [selectedAuthor, setSelectedAuthor] = useState<IAuthorTable | null>(null);
     // const [currentPage, setCurrentPage] = useState(1);
     // const pageSize = 5;
-    useEffect(() => {
-        const fetchAuthor = async () => {
-            try {
-                const res = await sendRequest<IBackendRes<IAuthorTable[]>>({
-                    url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author`,
-                    method: "GET",
-                });
-                console.log(res.data);
-                if (res.data) {
-                    const sortedData = [...res.data].sort((a, b) => {
-                        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-                        return dateB - dateA; // Sắp xếp giảm dần (mới nhất trước)
-                    });
-                    setAuthor(sortedData);
-                }
-            } catch (error) {
-                console.log(error);
+    const fetchAuthor = async () => {
+        try {
+            const res = await sendRequest<IBackendRes<IAuthorTable[]>>({
+                url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author`,
+                method: "GET",
+            });
+            console.log(res.data);
+            if (res.data) {
+                setAuthor(res.data);
             }
-        };
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+
         fetchAuthor();
 
     }, []);
@@ -61,6 +48,23 @@ const AuthorTable = () => {
     const onCloseEdit = () => {
         setOpenEdit(false);
         setSelectedAuthor(null);
+    };
+    const handleDeleteAuthor = async (_id: string) => {
+        const res = await sendRequest<IBackendRes<IAuthorTable>>({
+            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author/${_id}`,
+            method: "DELETE",
+        });
+        if (res.data) {
+            message.success("Xóa tác giả thành công.");
+            fetchAuthor();
+        } else {
+            message.error(res.message);
+        }
+    };
+
+    const cancel: PopconfirmProps["onCancel"] = (e) => {
+        console.log(e);
+        message.error("Click on No");
     };
 
     const columns: ColumnsType<IAuthorTable> = [
@@ -89,7 +93,7 @@ const AuthorTable = () => {
                         placement="leftTop"
                         title="Delete the task"
                         description="Bạn có chắc chắn muốn xóa tác giả này không?"
-                        onConfirm={confirm}
+                        onConfirm={() => handleDeleteAuthor(record._id)}
                         onCancel={cancel}
                         okText="Yes"
                         cancelText="No"
@@ -122,13 +126,13 @@ const AuthorTable = () => {
                     className="ant-table-striped"
                 />
             </div>
-            <AddAuthor openAdd={openAdd} setOpenAdd={setOpenAdd} />
+            <AddAuthor openAdd={openAdd} setOpenAdd={setOpenAdd} onSuccess={fetchAuthor} />
 
             <EditAuthor
                 openEdit={openEdit}
                 setOpenEdit={setOpenEdit}
                 author={selectedAuthor}
-
+                onSuccess={fetchAuthor}
             />
         </div>
     );

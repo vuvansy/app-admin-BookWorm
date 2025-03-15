@@ -7,6 +7,7 @@ import { App, Button, Col, ConfigProvider, DatePicker, Divider, Drawer, Form, Fo
 interface Props {
     openAdd: boolean;
     setOpenAdd: (values: boolean) => void;
+    onSuccess?: () => void;
 }
 
 type FieldType = {
@@ -14,7 +15,7 @@ type FieldType = {
 };
 
 const AddAuthor = (props: Props) => {
-    const { openAdd, setOpenAdd } = props;
+    const { openAdd, setOpenAdd, onSuccess } = props;
     const [isSubmit, setIsSubmit] = useState(false);
     const { message, modal, notification } = App.useApp();
     const [form] = Form.useForm();
@@ -44,11 +45,18 @@ const AddAuthor = (props: Props) => {
             if (d.data) {
                 //success
                 message.success("Thêm tác giả thành công.");
+                form.resetFields();
+                setOpenAdd(false);
+                if (onSuccess) {
+                    onSuccess();
+                }
             } else {
                 message.error(d.message);
             }
         } catch (error) {
             console.error('Error:', error);
+        } finally {
+            setIsSubmit(false);
         }
     };
 
@@ -86,14 +94,6 @@ const AddAuthor = (props: Props) => {
                         >
                             <Input />
                         </Form.Item>
-
-
-                        {/* <div className='flex justify-end gap-x-[15px]'>
-                            <Button onClick={onClose}>Hủy</Button>
-                            <Button onClick={onClose} type="primary" htmlType="submit">
-                                Tạo mới
-                            </Button>
-                        </div> */}
                     </Form>
                 </Modal>
             </ConfigProvider>

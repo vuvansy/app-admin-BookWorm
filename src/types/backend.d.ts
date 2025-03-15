@@ -32,13 +32,15 @@ declare global {
 
     interface ILogin {
         access_token: string;
+        refresh_token: string;
         user: {
+            id: string;
             email: string;
             phone: string;
             fullName: string;
             role: string;
-            avatar: string;
-            id: string;
+            image: string;
+            address: Address;
         }
     }
 
