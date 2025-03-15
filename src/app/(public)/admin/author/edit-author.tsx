@@ -10,11 +10,12 @@ interface Props {
     openEdit: boolean;
     setOpenEdit: (values: boolean) => void;
     author: IAuthorTable | null;
+    onSuccess?: () => void;
 
 }
 
 const EditAuthor = (props: Props) => {
-    const { openEdit, setOpenEdit, author } = props;
+    const { openEdit, setOpenEdit, author, onSuccess } = props;
     const [isSubmit, setIsSubmit] = useState(false);
     const { message, modal, notification } = App.useApp();
     const [form] = Form.useForm();
@@ -30,6 +31,37 @@ const EditAuthor = (props: Props) => {
         setOpenEdit(false);
         form.resetFields();
         setIsSubmit(false);
+        try {
+            const { name } = values;
+            const data = { name };
+            console.log('data:', data);
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author/${author?._id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                }
+            )
+            const d = await res.json();
+            if (d.data) {
+                //success
+                message.success("Cập nhật tác giả thành công.");
+                form.resetFields();
+                setOpenEdit(false);
+                if (onSuccess) {
+                    onSuccess();
+                }
+            } else {
+                message.error(d.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setIsSubmit(false);
+        }
     };
     return (
         <ConfigProvider
