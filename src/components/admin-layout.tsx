@@ -21,11 +21,12 @@ import {
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { TbLogout } from "react-icons/tb";
-import { Layout, Menu, Dropdown, Space, Avatar } from 'antd';
+import { Layout, Menu, Dropdown, Space, Avatar, Modal, Popconfirm, App } from 'antd';
 import type { MenuProps } from 'antd';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCurrentApp } from "@/context/app.context";
+import { sendRequest } from "@/utils/api";
 
 type MenuItem = Required<MenuProps>['items'][number];
 const { Content, Footer, Sider } = Layout;
@@ -40,26 +41,36 @@ export default function AdminLayout({
     const [collapsed, setCollapsed] = useState(false);
     const [activeMenu, setActiveMenu] = useState('');
     const [openKeys, setOpenKeys] = useState<string[]>([]);
+    const router = useRouter();
 
 
     const handleLogout = async () => {
         //todo
-        // Logic xử lý đăng xuấ
+        // Logic xử lý đăng xuất
+        const res = await sendRequest<IBackendRes<IFetchAccount>>({
+            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/logout`,
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
+        if (res.data) {
+            setUser(null);
+            setIsAuthenticated(false);
+            localStorage.removeItem("access_token");
+            router.push('/login');
+        }
+        // Khi người dùng bấm hủy, không làm gì cả
     }
 
     const items: MenuItem[] = [
         {
-            label: <Link href='/'>Dashboard </Link>,
+            label: <Link href='/'>Trang chủ</Link>,
             key: '/',
             icon: <AppstoreOutlined />
         },
         {
-            label: <Link href='/admin/order'>Đơn Hàng</Link>,
-            key: '/admin/order',
-            icon: <DollarCircleOutlined />
-        },
-        {
-            label: <Link href='/admin/user'>Người Dùng</Link>,
+            label: <Link href='/admin/user'>Người dùng</Link>,
             key: '/admin/user',
             icon: <UserOutlined />,
         },
@@ -69,33 +80,37 @@ export default function AdminLayout({
             icon: <FileImageOutlined />,
         },
         {
-            label: <Link href='/admin/genre'>Danh Mục</Link>,
+            label: <Link href='/admin/genre'>Danh mục</Link>,
             key: '/admin/genre',
             icon: <FileDoneOutlined />
         },
         {
-            label: <Link href='/admin/book'>Sản Phẩm</Link>,
+            label: <Link href='/admin/book'>Sản phẩm</Link>,
             key: '/admin/book',
             icon: <ReadOutlined />
         },
         {
-            label: <Link href='/admin/author'>Tác Giả</Link>,
+            label: <Link href='/admin/author'>Tác giả</Link>,
             key: '/admin/author',
             icon: <AuditOutlined />
         },
         {
-            label: <Link href='/admin/coupons'>Mã Giảm Giá</Link>,
+            label: <Link href='/admin/coupons'>Mã giảm giá</Link>,
             key: '/admin/coupons',
             icon: <TagsOutlined />
         },
         {
-            label: <Link href='/admin/reviews'>Phản Hồi</Link>,
+            label: <Link href='/admin/reviews'>Phản hồi</Link>,
             key: '/admin/reviews',
             icon: <CommentOutlined />
         },
-
         {
-            label: <span>Thống Kê</span>,
+            label: <Link href='/admin/order'>Đơn hàng</Link>,
+            key: '/admin/order',
+            icon: <DollarCircleOutlined />
+        },
+        {
+            label: <span>Thống kê</span>,
             key: '/admin/statistics',
             icon: <LineChartOutlined />,
             children: [
@@ -113,6 +128,27 @@ export default function AdminLayout({
         },
 
     ];
+    const { isAuthenticated, user, setUser, setIsAuthenticated } = useCurrentApp();
+    useEffect(() => {
+        const fetchAccount = async () => {
+            const accessToken = localStorage.getItem("access_token");
+            if (!accessToken) return;
+
+            const res = await sendRequest<IBackendRes<IFetchAccount>>({
+                url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                // useCredentials: true,
+            })
+            if (res.data) {
+                setUser(res.data.user)
+                setIsAuthenticated(true);
+            }
+        }
+        fetchAccount();
+    }, [])
 
     useEffect(() => {
         const foundItem = items.find((item) => item?.key === pathname) || null;
@@ -159,12 +195,15 @@ export default function AdminLayout({
             label: (
                 <div className="flex items-center gap-x-2">
                     <TbLogout className="text-[18px]" />
-                    <label
-                        style={{ cursor: 'pointer' }}
-                        onClick={handleLogout}
+                    <Popconfirm
+                        title="Xác nhận đăng xuất"
+                        description="Bạn có chắc chắn muốn đăng xuất không?"
+                        onConfirm={handleLogout}
+                        okText="Có"
+                        cancelText="Hủy"
                     >
-                        Đăng xuất
-                    </label>
+                        <span style={{ cursor: 'pointer' }}>Đăng xuất</span>
+                    </Popconfirm>
                 </div>
             ),
             key: 'logout',
@@ -173,75 +212,61 @@ export default function AdminLayout({
 
     return (
         <>
-            <Layout
-                style={{ minHeight: '100vh' }}
-                className="layout-admin"
-            >
-                <Sider
-                    theme='light'
-                    collapsible
-                    collapsed={collapsed}
-                    onCollapse={(value) => setCollapsed(value)}
+            <App>
+                <Layout
+                    style={{ minHeight: '100vh' }}
+                    className="layout-admin"
                 >
-                    <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
-                        <Link href="/" className='text-bg-text'>
-                            <div className="relative w-[160px]">
-                                <Image
-                                    src={"/icon/logo.png"}
-                                    alt={'logo BookWorm'}
-                                    width={0}
-                                    height={0}
-                                    sizes="100vw"
-                                    style={{
-                                        width: "100%",
-                                        height: "auto",
-                                    }}
-                                    priority
-                                    className="w-full object-cover"
-                                />
-                            </div>
-                        </Link>
-                    </div>
-                    <Menu
-                        selectedKeys={[activeMenu]}
-                        openKeys={openKeys}
-                        mode="inline"
-                        items={items}
-                        onOpenChange={setOpenKeys}
-                        onClick={(e) => setActiveMenu(e.key)}
-                    />
-                </Sider>
-                <Layout>
-                    <div className='admin-header' style={{
-                        height: "50px",
-                        borderBottom: "1px solid #ebebeb",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "0 80px 0 15px",
-                    }}>
-                        <span>
-                            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                                className: 'trigger',
-                                onClick: () => setCollapsed(!collapsed),
-                            })}
-                        </span>
-                        <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
-                            <Space style={{ cursor: "pointer" }}>
-                                <Avatar src={'/avatar/avatar.jpg'} />
-                                Xin Chào, Admin
-                                <CaretDownOutlined />
-                            </Space>
-                        </Dropdown>
-                    </div>
-                    <Content style={{ padding: '15px' }}>
-                        {children}
-                    </Content>
-                    <Footer style={{ padding: 0, textAlign: "center" }}>
-                        Website BookWorm &copy; FPT Polytechnic <HeartTwoTone />
-                    </Footer>
+                    <Sider
+                        theme='light'
+                        collapsible
+                        collapsed={collapsed}
+                        onCollapse={(value) => setCollapsed(value)}
+                    >
+                        <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
+                            <Link href="/" className='text-bg-text'>Admin</Link>
+                        </div>
+                        <Menu
+                            selectedKeys={[activeMenu]}
+                            openKeys={openKeys}
+                            mode="inline"
+                            items={items}
+                            onOpenChange={setOpenKeys}
+                            onClick={(e) => setActiveMenu(e.key)}
+                        />
+                    </Sider>
+                    <Layout>
+                        <div className='admin-header' style={{
+                            height: "50px",
+                            borderBottom: "1px solid #ebebeb",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "0 80px 0 15px",
+                        }}>
+                            <span>
+                                {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                                    className: 'trigger',
+                                    onClick: () => setCollapsed(!collapsed),
+                                })}
+                            </span>
+                            <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
+                                <Space style={{ cursor: "pointer" }}>
+                                    <Avatar src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/avatar/${user?.image}`} />
+                                    Xin Chào, {user?.fullName}
+                                    <CaretDownOutlined />
+                                </Space>
+                            </Dropdown>
+                        </div>
+                        <Content style={{ padding: '15px' }}>
+                            {children}
+                        </Content>
+                        <Footer style={{ padding: 0, textAlign: "center" }}>
+                            Website BookWorm &copy; FPT Polytechnic <HeartTwoTone />
+                        </Footer>
+                    </Layout>
                 </Layout>
-            </Layout>
+            </App>
         </>
     );
 }

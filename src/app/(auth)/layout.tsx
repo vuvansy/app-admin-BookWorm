@@ -1,3 +1,5 @@
+import { AppProvider } from "@/context/app.context";
+import { App } from "antd";
 
 
 export default function RootLayout({
@@ -7,7 +9,9 @@ export default function RootLayout({
 }>) {
   return (
     <main className="container">
-      {children}
+      <AppProvider>
+        {children}
+      </AppProvider>
     </main>
   );
 }

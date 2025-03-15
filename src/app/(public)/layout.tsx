@@ -1,5 +1,5 @@
-
 import AdminLayout from "@/components/admin-layout";
+import { AppProvider } from "@/context/app.context";
 
 export default function RootLayout({
   children,
@@ -7,10 +7,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-  
-          <AdminLayout>
-            {children}
-          </AdminLayout>
-    
+    <AppProvider>
+      <AdminLayout>
+        {children}
+      </AdminLayout>
+    </AppProvider>
   );
 }
