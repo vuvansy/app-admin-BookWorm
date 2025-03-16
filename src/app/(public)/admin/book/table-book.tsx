@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Table, Button, Tooltip, Popconfirm, Pagination } from "antd";
+import { Table, Button, Tooltip, Popconfirm, Pagination, message } from "antd";
 import {
   DeleteTwoTone,
   EditTwoTone,
@@ -15,6 +15,7 @@ import EditBook from "./edit-book";
 import BookDetail from "./detail-book";
 
 import { sendRequest } from "@/utils/api";
+import Link from "next/link";
 
 type BookData = {
   meta: {
@@ -99,9 +100,11 @@ const TableBook: React.FC = () => {
         url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/book/${book._id}`,
         method: "DELETE",
       });
+
+       message.success("Xóa sách thành công!");
       fetchBooks();
     } catch (error) {
-      console.error("Lỗi xóa sách:", error);
+      message.error(`Lỗi xóa sách: ${error}`);
     }
   };
 
@@ -216,7 +219,8 @@ const TableBook: React.FC = () => {
             Quản lý sách
           </div>
           <div className="flex space-x-2 items-center py-[14px]">
-            <Tooltip title="Danh Sách Sách Ngừng Kinh Doanh">
+            <Link href={"/admin/book/delete"}>
+             <Tooltip title="Danh Sách Sách Ngừng Kinh Doanh">
               <Button
                 icon={<DeleteTwoTone twoToneColor="#fff" />}
                 type="primary"
@@ -224,6 +228,7 @@ const TableBook: React.FC = () => {
                 Thùng Rác
               </Button>
             </Tooltip>
+            </Link>
             <Button icon={<ExportOutlined />} type="primary">
               Export
             </Button>
