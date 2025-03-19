@@ -264,4 +264,14 @@ declare global {
         id_book: IBook;
         id_order: IOrder;
     }
+
+    interface IReView {
+        _id: string
+        name:  string,
+        avgRating?:  number, 
+        image: string,
+        rating?:string,
+        createdAt?:Date,
+        updatedAt?:Date
+      }
 }

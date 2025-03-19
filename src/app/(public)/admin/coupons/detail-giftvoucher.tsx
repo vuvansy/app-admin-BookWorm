@@ -25,7 +25,7 @@ const CouponDetail: React.FC<CouponDetailProps> = ({
         <div className="flex flex-wrap rounded">
           <div className="w-full flex text-caption">
             <div className="flex-1 flex">
-              <div className="w-[40%] leading-[60px] flex items-center justify-center bg-bg-main border border-black/10 rounded-tl-lg">
+              <div className="w-[40%] leading-[60px] flex items-center justify-center bg-bg-main ">
                 ID
               </div>
               <div className="w-[60%] leading-[30px] flex items-center border border-bg-main px-[15px]">
@@ -97,6 +97,16 @@ const CouponDetail: React.FC<CouponDetailProps> = ({
               </div>
               <div className="w-[60%] leading-[30px] flex items-center border border-bg-main pl-[15px]">
                 {new Date(coupon.end_date).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex text-caption">
+            <div className="flex-1 flex">
+              <div className="w-[20%] leading-[60px] flex items-center justify-center bg-bg-main border border-black/10">
+                Mô Tả
+              </div>
+              <div className="w-[80%] leading-[20px] flex border border-bg-main px-[15px] pt-[10px]">
+                {coupon.description}
               </div>
             </div>
           </div>

@@ -22,7 +22,7 @@ const BookDetail: React.FC<BookDetailProps> = ({ book, visible, onClose }) => {
           {/* Dòng ID & Tên Sách */}
           <div className="w-full flex text-caption">
             <div className="flex-1 flex">
-              <div className="w-[30%] leading-[60px] flex items-center justify-center bg-bg-main border border-black/10 rounded-tl-lg">
+              <div className="w-[30%] leading-[60px] flex items-center justify-center bg-bg-main border border-black/10 ">
                 ID
               </div>
               <div className="w-[70%] leading-[30px] flex items-center border border-bg-main px-[15px]">
@@ -75,7 +75,9 @@ const BookDetail: React.FC<BookDetailProps> = ({ book, visible, onClose }) => {
               </div>
               <div className="w-[70%] leading-[30px] flex items-center border border-bg-main pl-[15px]">
                 {book.price_old ? (
-                  <span>{Intl.NumberFormat("vi-VN").format(book.price_old)} đ</span>
+                  <span>
+                    {Intl.NumberFormat("vi-VN").format(book.price_old)} đ
+                  </span>
                 ) : null}
               </div>
             </div>
@@ -173,19 +175,21 @@ const BookDetail: React.FC<BookDetailProps> = ({ book, visible, onClose }) => {
           </div>
           <Image.PreviewGroup>
             <div className="flex gap-2">
-              {[book.image, ...(book.slider ? book.slider : [])].map((img, index) => {
-                const imageUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${img}`;
-                return (
-                  <div key={index} className="ml-3 mt-3 w-[100px] h-[100px]">
-                    <Image
-                      width={100}
-                      height={100}
-                      src={imageUrl}
-                      className="rounded-lg border border-[#ccc] w-full h-full object-contain"
-                    />
-                  </div>
-                );
-              })}
+              {[book.image, ...(book.slider ? book.slider : [])].map(
+                (img, index) => {
+                  const imageUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${img}`;
+                  return (
+                    <div key={index} className="ml-3 mt-3 w-[100px] h-[100px]">
+                      <Image
+                        width={100}
+                        height={100}
+                        src={imageUrl}
+                        className="rounded-lg border border-[#ccc] w-full h-full object-contain"
+                      />
+                    </div>
+                  );
+                }
+              )}
             </div>
           </Image.PreviewGroup>
         </div>
