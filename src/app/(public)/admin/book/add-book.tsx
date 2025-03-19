@@ -1,6 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, InputNumber, Select, Upload, Image, Divider, message, App, } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Upload,
+  Image,
+  Divider,
+  message,
+  App,
+} from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import { UploadChangeParam } from "antd/es/upload";
@@ -104,7 +115,9 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
       return;
     }
     if (info.file.status === "done" || info.file.status === "removed") {
-      type === "thumbnail" ? setLoadingThumbnail(false) : setLoadingSlider(false);
+      type === "thumbnail"
+        ? setLoadingThumbnail(false)
+        : setLoadingSlider(false);
     }
   };
 
@@ -187,7 +200,7 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
         res.statusCode === "200" ||
         res.statusCode === "201"
       ) {
-        message.success('Tạo sản phẩm thành công!');
+        message.success("Tạo sản phẩm thành công!");
         if (res.data) {
           onAdd(res.data);
         }
@@ -249,26 +262,42 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
             className="!mb-0"
             rules={[{ required: true, message: "Vui lòng nhập giá cũ" }]}
           >
-           <InputNumber
-              min={1}
-              style={{ width: '100%' }}
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            <InputNumber
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
               addonAfter=" đ"
             />
           </Form.Item>
+
           <Form.Item
             label="Giá Mới"
             name="price_new"
             className="!mb-0"
-            rules={[{ required: true, message: "Vui lòng nhập giá mới" }]}
+            dependencies={["price_old"]}
+            rules={[
+              { required: true, message: "Vui lòng nhập giá mới" },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  const oldPrice = getFieldValue("price_old");
+                  if (!value || (oldPrice && value < oldPrice)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject("Giá mới phải nhỏ hơn giá cũ!");
+                },
+              }),
+            ]}
           >
             <InputNumber
-              min={1}
-              style={{ width: '100%' }}
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
               addonAfter=" đ"
             />
           </Form.Item>
+
           <Form.Item
             label="Số Lượng"
             name="quantity"
@@ -285,7 +314,9 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
           <Form.Item
             label="Tác Giả"
             name="authors"
-            rules={[{ required: true, message: "Vui lòng chọn ít nhất 1 tác giả" }]}
+            rules={[
+              { required: true, message: "Vui lòng chọn ít nhất 1 tác giả" },
+            ]}
             className="!mb-0"
           >
             <Select
@@ -318,7 +349,9 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
             label="Kích Thước Bao Bì"
             name="size"
             initialValue=""
-            rules={[{ required: true, message: "Vui lòng nhập kích thước bao bì" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập kích thước bao bì" },
+            ]}
             className="!mb-0"
           >
             <Input className="w-full" />
@@ -396,7 +429,9 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
             name="thumbnail"
             valuePropName="fileList"
             getValueFromEvent={normFile}
-            rules={[{ required: true, message: "Vui lòng upload ít nhất 1 ảnh" }]}
+            rules={[
+              { required: true, message: "Vui lòng upload ít nhất 1 ảnh" },
+            ]}
             className="!mb-0"
           >
             <Upload
