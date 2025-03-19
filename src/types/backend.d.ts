@@ -204,4 +204,13 @@ declare global {
         createdAt?: Date;
         updatedAt?: Date;
       }
+      interface IReView {
+        _id: string
+        name:  string,
+        avgRating?:  number, 
+        image: string,
+        rating?:string,
+        createdAt?:Date,
+        updatedAt?:Date
+      }
 }
