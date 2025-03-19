@@ -178,22 +178,22 @@ const EditBook: React.FC<EditBookProps> = ({
     if (visible && initialBook) {
       const thumbnailFileList: UploadFile[] = initialBook.image
         ? [
-          {
-            uid: "-1",
-            name: "thumbnail.png",
-            status: "done",
-            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${initialBook.image}`,
-          },
-        ]
+            {
+              uid: "-1",
+              name: "thumbnail.png",
+              status: "done",
+              url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${initialBook.image}`,
+            },
+          ]
         : [];
       const sliderFileList: UploadFile[] =
         initialBook.slider && initialBook.slider.length > 0
           ? initialBook.slider.map((img, index) => ({
-            uid: index.toString(),
-            name: `slider-${index}.png`,
-            status: "done",
-            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${img}`,
-          }))
+              uid: index.toString(),
+              name: `slider-${index}.png`,
+              status: "done",
+              url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${img}`,
+            }))
           : [];
 
       form.setFieldsValue({
@@ -292,26 +292,48 @@ const EditBook: React.FC<EditBookProps> = ({
 
         {/* Giá Cũ - Giá Mới - Số Lượng */}
         <div className="grid grid-cols-3 gap-4">
-          <Form.Item label="Giá Cũ" name="price_old">
+          <Form.Item
+            label="Giá Cũ"
+            name="price_old"
+            className="!mb-0"
+            rules={[{ required: true, message: "Vui lòng nhập giá cũ" }]}
+          >
             <InputNumber
-              min={1}
-              style={{ width: '100%' }}
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
               addonAfter=" đ"
             />
           </Form.Item>
+
           <Form.Item
             label="Giá Mới"
             name="price_new"
-            rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+            className="!mb-0"
+            dependencies={["price_old"]}
+            rules={[
+              { required: true, message: "Vui lòng nhập giá mới" },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  const oldPrice = getFieldValue("price_old");
+                  if (!value || (oldPrice && value < oldPrice)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject("Giá mới phải nhỏ hơn giá cũ!");
+                },
+              }),
+            ]}
           >
             <InputNumber
-              min={1}
-              style={{ width: '100%' }}
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
               addonAfter=" đ"
             />
           </Form.Item>
+
           <Form.Item
             label="Số Lượng"
             name="quantity"
