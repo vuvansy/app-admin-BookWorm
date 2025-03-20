@@ -147,7 +147,7 @@ const TableOrders = () => {
             align: 'center' as 'center',
             render: (_, record) => (
                 <div className="flex justify-center">
-                    <Link href={`/admin/order/${record._id}`} className="px-3 py-[6px] bg-[#D84040] cursor-pointer rounded-lg">
+                    <Link href={`/admin/order/${record._id}`} className="px-3 py-[6px] bg-[#2F80ED] cursor-pointer rounded-lg">
                         <BsEyeFill className="text-white text-[16px]" />
                     </Link>
                 </div>

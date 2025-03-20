@@ -1,78 +1,103 @@
 "use client"
 
-import { TableProps, Empty, Table, Select } from 'antd';
+import { TableProps, Empty, Table, Select, Spin, App } from 'antd';
 import Image from 'next/image';
 import type { FormProps } from 'antd';
 import { Button, Form } from 'antd';
+import { useParams } from 'next/navigation';
+import useSWR, { mutate } from "swr";
+import dayjs from 'dayjs';
+import { sendRequest } from '@/utils/api';
+import { useEffect, useState } from 'react';
+import Swal from "sweetalert2";
+
+const fetcher = (...args: [RequestInfo, RequestInit?]) =>
+    fetch(...args).then((res) => res.json());
+
 type FieldType = {
     status: number;
 
 };
 
-interface DataTypeOrder {
-    key: string;
-    image: string;
-    name: string;
-    price: number;
-    quantity: number;
-    total: number;
-}
-
-const dataOrder: DataTypeOrder[] = [
-    {
-        key: '1',
-        name: 'Tuyển Tập Akira Toriyama - Phim Trường Akira Toriyama - Tập 2 (Tái Bản 2024)',
-        image: "/books/sachlichsu.webp",
-        price: 10000,
-        quantity: 2,
-        total: 200000,
-    },
-    {
-        key: '2',
-        name: 'Hoàng Tử Bé (Song Ngữ Việt-Anh)',
-        image: "/books/sachtienganh.jpeg",
-        price: 10000,
-        quantity: 2,
-        total: 200000,
-    },
-    {
-        key: '3',
-        name: 'Hoàng Tử Bé (Song Ngữ Việt-Anh)',
-        image: "/books/sachvanhoa.png",
-        price: 10000,
-        quantity: 2,
-        total: 200000,
-    },
-
-];
 
 const InfoOrder = () => {
+    const params = useParams();
+    const id = params.id as string;
+    const { message } = App.useApp();
+    const [form] = Form.useForm();
+    const [status, setStatus] = useState<string>();
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
+    // Lấy thông tin đơn hàng
+    const { data: orderData, error: orderError, isLoading: orderLoading } = useSWR<IBackendRes<IHistory>>(
+        id ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order-id/${id}` : null,
+        fetcher
+    );
+    // Lấy chi tiết đơn hàng
+    const { data: orderDetailData, error: orderDetailError, isLoading: orderDetailLoading } = useSWR<IBackendRes<IOrderDetailTable[]>>(
+        id ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order-detail/${id}` : null,
+        fetcher
+    );
+
+    const order = orderData?.data;
+    const orderDetails = orderDetailData?.data;
+
+    useEffect(() => {
+        if (!order || order.status === undefined) return;
+        setStatus(order.status.toString());
+    }, [order]);
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        try {
+            const res = await sendRequest<IBackendRes<IOrder>>({
+                url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order/update-status/${id}`,
+                method: "PUT",
+                body: { status: Number(values.status) },
+            });
+            if (res.data) {
+                Swal.fire({
+                    title: "Thành công",
+                    text: "Cập nhật trạng thái đơn hàng thành công!",
+                    icon: "success",
+                    draggable: true,
+                    showCloseButton: false,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#2db7f5',
+                    position: 'center'
+                });
+                mutate(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order-id/${id}`);
+            } else {
+                message.error("Cập nhật trạng thái thất bại!");
+            }
+
+        } catch (error) {
+            message.error("Cập nhật trạng thái thất bại!");
+        }
     };
 
-    const columnsOrder: TableProps<DataTypeOrder>['columns'] = [
+    const columnsOrder: TableProps<IOrderDetailTable>['columns'] = [
         {
             title: 'Ảnh',
-            dataIndex: 'image',
+            dataIndex: 'id_book',
             key: 'image',
             align: "center",
-            render: (image) => (
+            render: (id_book) => (
                 <div className="flex justify-center">
                     <div className="relative w-[80px] h-[80px]">
-                        <Image src={image} alt="" className="object-cover" fill />
+                        <Image
+                            src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/book/${id_book.image}`}
+                            alt={id_book.name}
+                            className="object-cover" fill />
                     </div>
                 </div>
             ),
         },
         {
             title: 'Tên Sản Phẩm',
-            dataIndex: 'name',
+            dataIndex: 'id_book',
             key: 'name',
-            render: (name) => (
+            render: (id_book) => (
                 <div className="w-[400px]">
-                    <p>{name}</p>
+                    <p>{id_book.name}</p>
                 </div>
             ),
         },
@@ -98,44 +123,110 @@ const InfoOrder = () => {
             dataIndex: 'total',
             key: 'total',
             align: "center",
-            render: (total) => (
-                <div className="text-center leading-none">
-                    {new Intl.NumberFormat('vi-VN').format(total)} đ
-                </div>
-            ),
+            render: (_, record) => {
+                const computedTotal = Number(record.price) * Number(record.quantity);
+                return (
+                    <div className="text-center leading-none">
+                        {new Intl.NumberFormat('vi-VN').format(computedTotal)} đ
+                    </div>
+                );
+            },
         },
     ];
 
+    if (orderError || orderDetailError) return <div>Lỗi tải dữ liệu</div>;
+
+    if (orderLoading || orderDetailLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[100px]">
+                <Spin size="large">
+                    <span className="">Loading...</span>
+                </Spin>
+            </div>
+        );
+    }
+
+    if (!orderData || !orderDetailData) return <div>Không có dữ liệu</div>;
+
+
+    const statusOptions = [
+        { value: "0", label: "Chờ Xác Nhận" },
+        { value: "1", label: "Đã Xác Nhận" },
+        { value: "2", label: "Đang Vận Chuyển" },
+        { value: "3", label: "Đã Giao Hàng" },
+        { value: "4", label: "Đã Hủy" },
+    ];
+
+    const getAvailableStatusOptions = (currentStatus: number) => {
+        switch (currentStatus) {
+            case 0: // Chờ Xác Nhận
+                return statusOptions; // Hiển thị tất cả trạng thái
+            case 1: // Đã Xác Nhận
+                return statusOptions.filter(opt => opt.value !== "0"); // Ẩn "Chờ Xác Nhận"
+            case 2: // Đang Vận Chuyển
+                return statusOptions.filter(opt => !["0", "1", "4"].includes(opt.value)); // Ẩn "Chờ Xác Nhận", "Đã Xác Nhận", "Đã Hủy"
+            case 3: // Đã Giao Hàng
+            case 4: // Đã Hủy
+                return statusOptions.filter(opt => opt.value === currentStatus.toString()); // Chỉ giữ trạng thái hiện tại
+            default:
+                return [];
+        }
+    };
+    const availableOptions = getAvailableStatusOptions(order?.status ?? 0);
+    const isDisabled = order?.status === 3 || order?.status === 4;
+
+
+    const orderStatusMap: Record<number, string> = {
+        0: "Chờ Xác Nhận",
+        1: "Đã Xác Nhận",
+        2: "Đang Vận Chuyển",
+        3: "Đã Giao Hàng",
+        4: "Đã hủy"
+    };
+
+    const getStatusColor = (status: number | undefined) => {
+        switch (status) {
+            case 1: return "bg-blue-500";
+            case 2: return "bg-[#2db7f5]";
+            case 3: return "bg-green-500";
+            case 4: return "bg-red-500";
+            default: return "bg-yellow-500";
+        }
+    };
+    const getStatusLabel = (status: number) => orderStatusMap[status] || "Không xác định";
+    const address = typeof order?.address === "string" ? JSON.parse(order.address) : order?.address;
     return (
         <>
             <div className="flex justify-between pb-[10px]">
                 <h2 className="text-body1 uppercase font-semibold">Thông tin đơn hàng</h2>
                 <div className="flex gap-[8px]">
-                    <p className="font-semibold">67af11e06e65f61d9f0e5900</p>
-                    <p className="px-3 bg-yellow-1 text-white font-semibold rounded">Chờ Xác Nhận</p>
+                    <p className="font-semibold">{order?._id}</p>
+                    <p className={`px-3 ${getStatusColor(order?.status)} text-white font-semibold rounded`}>
+                        {getStatusLabel(order?.status as number)}
+                    </p>
                 </div>
             </div>
             <hr />
             <div className="flex justify-between my-[10px]">
                 <div className="">
                     <h3 className="font-semibold text-body1 pb-1">Thông Tin Khách Hàng</h3>
-                    <p className='pb-1'>Tên: Võ Văn khang</p>
-                    <p className='pb-1'>Địa chỉ: 72N đường HT05, HP24, Phường Hiệp Thành, Quận 12, Thành Phố Hồ Chí Minh</p>
-                    <p className='pb-1'>SĐT: 0828937376</p>
-                    <p className='pb-1'>Email: khangvvps26357.fpt.edu.vn</p>
+                    <p className='pb-1'>Tên: {order?.fullName}</p>
+                    <p className='pb-1'>Địa chỉ:  {`${address?.street}, ${address?.ward?.name}, ${address?.district?.name}, ${address?.city?.name}`}</p>
+                    <p className='pb-1'>SĐT: {order?.phone}</p>
+                    <p className='pb-1'>Email: {order?.email}</p>
                 </div>
                 <div>
-                    <div className="mb-2">
+                    <div className="mb-2 text-right">
                         <h3 className="font-semibold text-body1">Phương Thức Thanh Toán</h3>
-                        <p className="text-right capitalize">Thanh toán khi nhận hàng</p>
+                        <p className="capitalize">{order?.id_payment.name}</p>
                     </div>
-                    <div className="mb-2">
+                    <div className="mb-2 text-right">
                         <h3 className="font-semibold text-body1">Phương Thức Vận Chuyển</h3>
-                        <p className="text-right capitalize">giao hàng tiết kiệm</p>
+                        <p className="capitalize">{order?.id_delivery.name}</p>
                     </div>
                     <div className="text-right">
                         <h3 className="font-semibold text-body1">Ngày Đặt Hàng</h3>
-                        <p>31:00:00 20-2-2025</p>
+                        <p>{dayjs(order?.createdAt).format("DD-MM-YYYY HH:mm:ss")}</p>
                     </div>
                 </div>
             </div>
@@ -143,9 +234,11 @@ const InfoOrder = () => {
                 <h3 className="text-body1 font-semibold">Thay Đổi Trạng Thái Đơn Hàng</h3>
                 <div className='py-[10px]'>
                     <Form
+                        form={form}
                         name="form-order"
                         onFinish={onFinish}
                         className='flex gap-x-2'
+                        initialValues={{ status: order?.status?.toString() }}
                     >
                         <Form.Item<FieldType>
                             name="status"
@@ -153,16 +246,15 @@ const InfoOrder = () => {
                             className='!mb-0'
                         >
                             <Select
+                                disabled={isDisabled}
+                                onChange={(value) => {
+                                    setStatus(value);
+                                    form.setFieldsValue({ status: value });
+                                }}
                                 showSearch
                                 style={{ width: 230 }}
                                 placeholder="Cập nhật trạng thái đơn hàng"
-                                options={[
-                                    { value: "0", label: "Chờ Xác Nhận" },
-                                    { value: "1", label: "Đã Xác Nhận" },
-                                    { value: "2", label: "Đang Vận Chuyển" },
-                                    { value: "3", label: "Đã Giao Hàng" },
-                                    { value: "4", label: "Đã Hủy" },
-                                ]}
+                                options={availableOptions}
                             />
                         </Form.Item>
                         <Button type="primary" htmlType="submit">
@@ -173,9 +265,10 @@ const InfoOrder = () => {
             </div>
             <div className="py-[10px]">
                 <h2 className="text-body-bold pb-[10px]">Thông Tin Sản Phẩm</h2>
-                <Table<DataTypeOrder>
+                <Table<IOrderDetailTable>
                     columns={columnsOrder}
-                    dataSource={dataOrder}
+                    rowKey="_id"
+                    dataSource={orderDetails}
                     pagination={false}
                     size="small"
                     locale={{

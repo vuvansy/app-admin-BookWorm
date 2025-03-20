@@ -205,6 +205,30 @@ declare global {
         updatedAt?: Date;
     }
 
+    interface IDelivery {
+        _id: string;
+        name: string;
+        price: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt?: Date | null;
+    }
+    interface IPayment {
+        _id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt?: Date | null;
+    }
+
+    interface IOrderDetailTable {
+        _id: string;
+        quantity: number;
+        price: string;
+        id_book: IBook;
+        id_order: IOrder;
+    }
+
     interface IOrder {
         _id: string;
         fullName: string;
@@ -267,11 +291,11 @@ declare global {
 
     interface IReView {
         _id: string
-        name:  string,
-        avgRating?:  number, 
+        name: string,
+        avgRating?: number,
         image: string,
-        rating?:string,
-        createdAt?:Date,
-        updatedAt?:Date
-      }
+        rating?: string,
+        createdAt?: Date,
+        updatedAt?: Date
+    }
 }
