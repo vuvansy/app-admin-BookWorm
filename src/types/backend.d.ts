@@ -191,17 +191,111 @@ declare global {
         Districts: District[];
     }
     interface ICouponTable {
-        _id: string ,
+        _id: string,
         code: string,
-        value: number, 
-        max_value: number, 
-        min_total: number, 
-        description: string ,
+        value: number,
+        max_value: number,
+        min_total: number,
+        description: string,
         quantity: number,
         status: boolean | string;
-        start_date:Date,
+        start_date: Date,
         end_date: Date,
         createdAt?: Date;
         updatedAt?: Date;
-      }
+    }
+
+    interface IDelivery {
+        _id: string;
+        name: string;
+        price: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt?: Date | null;
+    }
+    interface IPayment {
+        _id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt?: Date | null;
+    }
+
+    interface IOrderDetailTable {
+        _id: string;
+        quantity: number;
+        price: string;
+        id_book: IBook;
+        id_order: IOrder;
+    }
+
+    interface IOrder {
+        _id: string;
+        fullName: string;
+        phone: string;
+        email?: string;
+        address: Address;
+        note?: string;
+        products: ICart[];
+        shippingPrice: number;
+        discountAmount: number;
+        order_total: number;
+        isPaid: boolean;
+        status: number;
+        id_user?: string;
+        id_delivery?: string;
+        id_payment?: string;
+        id_coupons?: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }
+
+    interface IHistory {
+        _id: string;
+        fullName: string;
+        phone: string;
+        email: string;
+        address: string;
+        note?: string;
+        quantity: number;
+        status: number;
+        shippingPrice: number;
+        discountAmount: number;
+        order_total: number;
+        isPaid: boolean;
+        paidAt?: string;
+        id_user: string;
+        id_payment: IPayment;
+        id_delivery: IDelivery;
+        id_coupons?: string;
+        deleted: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }
+
+
+    interface IOrderDetail {
+        _id?: string;
+        quantity: number;
+        price: string;
+        id_book: string;
+        id_order: string;
+    }
+    interface IOrderDetailTable {
+        _id: string;
+        quantity: number;
+        price: string;
+        id_book: IBook;
+        id_order: IOrder;
+    }
+
+    interface IReView {
+        _id: string
+        name: string,
+        avgRating?: number,
+        image: string,
+        rating?: string,
+        createdAt?: Date,
+        updatedAt?: Date
+    }
 }
