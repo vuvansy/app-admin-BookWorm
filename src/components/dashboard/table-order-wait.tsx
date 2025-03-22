@@ -65,7 +65,7 @@ const TableOrderWait = () => {
 
     const orderDetails = orderDetailData?.data;
 
-    if (orderLoading) {
+    if (orderLoading || orderDetailLoading ) {
         return (
             <div className="flex items-center justify-center min-h-[300px]">
                 <Spin size="large">
@@ -74,7 +74,7 @@ const TableOrderWait = () => {
             </div>
         );
     };
-    if (orderError) return <p>Có lỗi xảy ra khi tải dữ liệu!</p>;
+    if (orderError || orderDetailError) return <p>Có lỗi xảy ra khi tải dữ liệu!</p>;
 
     const columns: TableProps<IHistory>['columns'] = [
         {

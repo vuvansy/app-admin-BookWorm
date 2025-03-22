@@ -306,4 +306,12 @@ declare global {
         createdAt?: Date,
         updatedAt?: Date
     }
+
+    interface Stats {
+        totalOrders: number;
+        totalRevenue: number;
+        totalUsers: number;
+        totalReviews: number;
+        totalProducts: number;
+    }
 }
