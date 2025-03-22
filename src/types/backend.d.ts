@@ -25,6 +25,14 @@ declare global {
             limit: number;
             pages: number;
             total: number;
+            statusCounts?: {
+                "0": number;
+                "1": number;
+                "2": number;
+                "3": number;
+                "4": number;
+                "": number;
+            };
         },
         result: T[]
     }
@@ -297,5 +305,13 @@ declare global {
         rating?: string,
         createdAt?: Date,
         updatedAt?: Date
+    }
+
+    interface Stats {
+        totalOrders: number;
+        totalRevenue: number;
+        totalUsers: number;
+        totalReviews: number;
+        totalProducts: number;
     }
 }

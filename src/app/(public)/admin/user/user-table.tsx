@@ -32,7 +32,7 @@ const UserTable = () => {
     const [loading, setLoading] = useState(false);
     const [meta, setMeta] = useState({
         page: 1,
-        limit: 5,
+        limit: 10,
         pages: 0,
         total: 0,
     });
