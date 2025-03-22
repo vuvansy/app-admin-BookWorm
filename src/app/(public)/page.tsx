@@ -10,7 +10,7 @@ import { HiUserGroup } from "react-icons/hi2";
 const HomePage = () => {
 
   return (
-    <div>
+    <>
       <div className="mb-5">
         <Row gutter={[20, 20]}>
           <Col span={6}>
@@ -64,7 +64,7 @@ const HomePage = () => {
         <Statistical />
         <CustomerNew />
       </div>
-    </div>
+    </>
   )
 }
 

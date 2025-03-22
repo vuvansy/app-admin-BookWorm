@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Table, Tabs, TableProps, Empty, Spin } from 'antd';
 import { BsEyeFill } from "react-icons/bs";
 import Link from "next/link";
@@ -8,18 +8,8 @@ import useSWR from "swr";
 import { sendRequest } from "@/utils/api";
 import dayjs from "dayjs";
 
-const fetcher = async (url: string) => {
-    const response = await sendRequest<IBackendRes<IModelPaginate<IHistory>>>({
-        url,
-        method: "GET"
-    });
-
-    if (!response?.data) {
-        throw new Error("API không trả về dữ liệu");
-    }
-
-    return response.data;
-};
+const fetcher = (...args: [RequestInfo, RequestInit?]) =>
+    fetch(...args).then((res) => res.json());
 
 
 const TableOrders = () => {
@@ -41,21 +31,21 @@ const TableOrders = () => {
     }).toString();
     const queryString = params ? `?${params}` : "";
 
-    const { data: orderData, error: orderError, isLoading: orderLoading } = useSWR<{ meta: any, result: IHistory[] }>(
+    const { data: orderData, error: orderError, isLoading: orderLoading } = useSWR<IBackendRes<IModelPaginate<IHistory>>>(
         `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order${queryString}`,
         fetcher
     );
-    useEffect(() => {
-        if (orderData?.meta) {
-            setMeta(prev => ({
-                ...prev,
-                pages: orderData.meta.pages,
-                total: orderData.meta.total,
-            }));
-        }
-    }, [orderData, meta.page]);
-    const orders = orderData?.result ?? [];
-    const statusCounts = orderData?.meta?.statusCounts || {};
+
+    const orders = orderData?.data?.result;
+    const statusCounts = orderData?.data?.meta?.statusCounts || {
+        "": 0,
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+    };
+
     if (orderLoading) {
         return (
             <div className="flex items-center justify-center min-h-[500px]">
@@ -68,7 +58,7 @@ const TableOrders = () => {
     if (orderError) return <p>Có lỗi xảy ra khi tải dữ liệu!</p>;
 
     const items = [
-        { key: "", label: `Tất cả (${meta.total || 0})` },
+        { key: "", label: `Tất cả (${statusCounts[""] || 0})` },
         { key: "0", label: `Chờ xác nhận (${statusCounts["0"] || 0})` },
         { key: "1", label: `Đã xác nhận (${statusCounts["1"] || 0})` },
         { key: "2", label: `Đang vận chuyển (${statusCounts["2"] || 0})` },
@@ -138,6 +128,7 @@ const TableOrders = () => {
         {
             title: 'Thời Gian',
             key: 'date',
+            sorter: false,
             dataIndex: 'createdAt',
             render: (text) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
         },
@@ -167,14 +158,14 @@ const TableOrders = () => {
             <Table<IHistory>
                 columns={columns}
                 dataSource={orders}
-                rowKey={"_id"}
+                rowKey="_id"
                 size="small"
                 pagination={
                     {
                         current: meta.page,
                         pageSize: meta.limit,
                         showSizeChanger: true,
-                        total: orderData?.meta?.total,
+                        total: orderData?.data?.meta.total,
 
                         showTotal: (total, range) => (
                             <div> {range[0]}-{range[1]} trên {total} rows</div>
