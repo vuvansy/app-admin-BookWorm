@@ -314,4 +314,7 @@ declare global {
         totalReviews: number;
         totalProducts: number;
     }
+    interface IRevenueStats {
+        [key: string]: number; 
+    }
 }
