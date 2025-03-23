@@ -132,19 +132,21 @@ export default function AdminLayout({
     useEffect(() => {
         const fetchAccount = async () => {
             const accessToken = localStorage.getItem("access_token");
-            if (!accessToken) return;
-
-            const res = await sendRequest<IBackendRes<IFetchAccount>>({
-                url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                // useCredentials: true,
-            })
-            if (res.data) {
-                setUser(res.data.user)
-                setIsAuthenticated(true);
+            if (!accessToken) {
+                router.push('/login');
+            } else {
+                const res = await sendRequest<IBackendRes<IFetchAccount>>({
+                    url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    // useCredentials: true,
+                })
+                if (res.data) {
+                    setUser(res.data.user)
+                    setIsAuthenticated(true);
+                }
             }
         }
         fetchAccount();
@@ -252,7 +254,7 @@ export default function AdminLayout({
                             </span>
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: "pointer" }}>
-                                    <Avatar src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/avatar/${user?.image}`} />
+                                    <Avatar src={'/avatar/avatar.jpg'} />
                                     Xin Chào, {user?.fullName}
                                     <CaretDownOutlined />
                                 </Space>
