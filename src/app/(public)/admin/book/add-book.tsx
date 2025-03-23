@@ -281,10 +281,10 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   const oldPrice = getFieldValue("price_old");
-                  if (!value || (oldPrice && value < oldPrice)) {
+                  if (!value || (oldPrice && value <= oldPrice)) {
                     return Promise.resolve();
                   }
-                  return Promise.reject("Giá mới phải nhỏ hơn giá cũ!");
+                  return Promise.reject("Giá mới phải nhỏ hơn hoặc giá cũ!");
                 },
               }),
             ]}
