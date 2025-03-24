@@ -11,7 +11,15 @@ import { sendRequest } from '@/utils/api'
 import { ColumnsType } from "antd/es/table";
 import FilterForm from "./form-filter";
 import ImportUser from "./data/import.user";
-import { CSVLink } from "react-csv";
+//  import { CSVLink } from "react-csv";
+import dynamic from "next/dynamic";
+
+const CSVLinkNoSSR = dynamic(
+  () => import("react-csv").then((mod) => mod.CSVLink),
+  { ssr: false }
+);
+
+
 
 type UserData = {
     meta: {
@@ -239,12 +247,12 @@ const UserTable = () => {
                         <Button
                             icon={<ExportOutlined />}
                             type="primary">
-                            <CSVLink
+                          <CSVLinkNoSSR
                                 data={currentDataTable}
                                 filename='export-user.csv'
                             >
                                 Export
-                            </CSVLink>
+                            </CSVLinkNoSSR>
                         </Button>
                         <Button
                             icon={<ImportOutlined />}
