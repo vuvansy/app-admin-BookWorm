@@ -17,6 +17,11 @@ import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import { UploadChangeParam } from "antd/es/upload";
 import { MAX_UPLOAD_IMAGE_SIZE } from "@/services/helper";
 import { sendRequest } from "@/utils/api";
+import dynamic from "next/dynamic";
+
+const CKEditorNoSSR = dynamic(() => import("./CKEditorWrapper"), {
+  ssr: false,
+});
 
 interface AddBookProps {
   visible: boolean;
@@ -26,14 +31,24 @@ interface AddBookProps {
 
 const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
   const [form] = Form.useForm();
-  const { message, notification } = App.useApp();
+  const { message: antdMessage, notification } = App.useApp();
   const [loadingThumbnail, setLoadingThumbnail] = useState(false);
   const [loadingSlider, setLoadingSlider] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
 
+  // Sử dụng state riêng cho nội dung CKEditor
+  const [editorContent, setEditorContent] = useState("");
+
   const [authors, setAuthors] = useState<IAuthor[]>([]);
   const [genres, setGenres] = useState<IGenre[]>([]);
+
+  useEffect(() => {
+    // Nếu cần, khi modal mở, reset lại editorContent
+    if (!visible) {
+      setEditorContent("");
+    }
+  }, [visible]);
 
   useEffect(() => {
     const fetchAuthors = async () => {
@@ -79,11 +94,11 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
   const beforeUpload = (file: RcFile) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error("Chỉ được upload file JPG/PNG!");
+      antdMessage.error("Chỉ được upload file JPG/PNG!");
     }
     const isLtSize = file.size / 1024 / 1024 < MAX_UPLOAD_IMAGE_SIZE;
     if (!isLtSize) {
-      message.error(`Ảnh phải nhỏ hơn ${MAX_UPLOAD_IMAGE_SIZE}MB!`);
+      antdMessage.error(`Ảnh phải nhỏ hơn ${MAX_UPLOAD_IMAGE_SIZE}MB!`);
     }
     return isJpgOrPng && isLtSize;
   };
@@ -155,7 +170,6 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
 
       uploadFile.url = data.data?.filePath || "";
       onSuccess?.(data, uploadFile as unknown as XMLHttpRequest);
-      // console.log("File path từ server:", data.data?.filePath);
     } catch (error) {
       console.error("Lỗi upload:", error);
       onError?.(error as Error);
@@ -164,6 +178,8 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
 
   const handleOk = async () => {
     try {
+      // Đồng bộ nội dung CKEditor vào form trước khi validate
+      form.setFieldsValue({ description: editorContent });
       const values = await form.validateFields();
       const thumbnailList = values.thumbnail;
       const sliderList = values.slider;
@@ -200,18 +216,19 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
         res.statusCode === "200" ||
         res.statusCode === "201"
       ) {
-        message.success("Tạo sản phẩm thành công!");
+        antdMessage.success("Tạo sản phẩm thành công!");
         if (res.data) {
           onAdd(res.data);
         }
       } else {
-        message.error(res.message || "Tạo sản phẩm thất bại!");
+        antdMessage.error(res.message || "Tạo sản phẩm thất bại!");
       }
       form.resetFields();
+      setEditorContent("");
       onClose();
     } catch (error) {
       console.error("Error creating book:", error);
-      message.error("Tạo sản phẩm thất bại!");
+      antdMessage.error("Tạo sản phẩm thất bại!");
     }
   };
 
@@ -221,13 +238,13 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
       open={visible}
       onCancel={() => {
         form.resetFields();
+        setEditorContent("");
         onClose();
       }}
       onOk={handleOk}
       okText="Tạo Mới"
       cancelText="Hủy"
       maskClosable={false}
-      destroyOnClose
       width={"60vw"}
       style={{ top: 20 }}
     >
@@ -284,7 +301,9 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
                   if (!value || (oldPrice && value <= oldPrice)) {
                     return Promise.resolve();
                   }
-                  return Promise.reject("Giá mới phải nhỏ hơn hoặc giá cũ!");
+                  return Promise.reject(
+                    "Giá mới phải nhỏ hơn hoặc bằng giá cũ!"
+                  );
                 },
               }),
             ]}
@@ -402,12 +421,15 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
           <Form.Item
             label="Loại Bìa"
             name="book_cover"
-            initialValue=""
             className="!mb-0"
-            rules={[{ required: true, message: "Vui lòng nhập hình thức" }]}
+            rules={[{ required: true, message: "Vui lòng chọn loại bìa" }]}
           >
-            <Input className="w-full" />
+            <Select placeholder="Chọn loại bìa">
+              <Select.Option value="bìa cứng">Bìa cứng</Select.Option>
+              <Select.Option value="bìa mềm">Bìa mềm</Select.Option>
+            </Select>
           </Form.Item>
+
           <div></div>
           <div></div>
         </div>
@@ -417,9 +439,14 @@ const AddBook: React.FC<AddBookProps> = ({ visible, onAdd, onClose }) => {
           label="Mô Tả Sản Phẩm"
           name="description"
           rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-          className="!mb-0"
         >
-          <Input.TextArea rows={3} className="w-full" />
+          <CKEditorNoSSR
+            value={editorContent}
+            onChange={(data) => {
+              setEditorContent(data);
+              form.setFieldsValue({ description: data });
+            }}
+          />
         </Form.Item>
 
         {/* Ảnh Thumbnail - Ảnh Slider */}

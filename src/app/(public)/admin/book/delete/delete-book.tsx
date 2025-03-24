@@ -6,6 +6,7 @@ import type { ColumnsType } from "antd/es/table";
 import FilterBook from "../filter-book";
 import BookDetail from "../detail-book";
 import { sendRequest } from "@/utils/api";
+import Link from "next/link";
 
 type BookData = {
   meta: {
@@ -57,9 +58,8 @@ const DeleteBook: React.FC = () => {
     fetchBookDelete();
   }, [meta.page, meta.limit, searchTerm]);
 
- 
   const handleSearch = (values: any) => {
-    //  console.log("Dữ liệu nhận từ FilterBook:", values); 
+    //  console.log("Dữ liệu nhận từ FilterBook:", values);
     if (values?.bookName) {
       setSearchTerm(values.bookName);
       setMeta((prev) => ({ ...prev, page: 1 }));
@@ -73,15 +73,14 @@ const DeleteBook: React.FC = () => {
     setMeta((prev) => ({ ...prev, page: 1 }));
   };
 
-
   const handleUpdateBook = async (book: IBookTable) => {
     try {
       await sendRequest({
         url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/book/restore/${book._id}`,
         method: "PATCH",
-      })
+      });
 
-        message.success("Khôi phục sách thành công!");
+      message.success("Khôi phục sách thành công!");
 
       fetchBookDelete();
     } catch (error) {
@@ -122,14 +121,14 @@ const DeleteBook: React.FC = () => {
       dataIndex: "authors",
       render: (authors: IAuthor[] | undefined) => (
         <div className="w-[150px] whitespace-nowrap overflow-hidden text-ellipsis">
-          {   authors?.map((author) => author.name).join(", ") || ""}</div>
-      )
-     ,
+          {authors?.map((author) => author.name).join(", ") || ""}
+        </div>
+      ),
     },
     {
       title: "Thể Loại",
       dataIndex: "id_genre",
-      render: (genre: IGenre) =>  (
+      render: (genre: IGenre) => (
         <div className="w-[150px] whitespace-nowrap overflow-hidden text-ellipsis">
           {genre?.name}
         </div>
@@ -138,20 +137,19 @@ const DeleteBook: React.FC = () => {
     {
       title: "Nhà Xuất Bản",
       dataIndex: "publishers",
-        render: (publishers: string | undefined) => (
-          <div className="w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">
-            {publishers}
-          </div>
-        ),
+      render: (publishers: string | undefined) => (
+        <div className="w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">
+          {publishers}
+        </div>
+      ),
     },
     {
       title: "Giá Mới",
       dataIndex: "price_new",
       align: "center",
-      render: (price: number) =>
-        (
-          <span>{Intl.NumberFormat("vi-VN").format(price)} đ</span>
-        ),
+      render: (price: number) => (
+        <span>{Intl.NumberFormat("vi-VN").format(price)} đ</span>
+      ),
     },
     {
       title: "Giá Cũ",
@@ -162,7 +160,7 @@ const DeleteBook: React.FC = () => {
           <span>{Intl.NumberFormat("vi-VN").format(price_old)} đ</span>
         ) : null,
     },
-    
+
     {
       title: "Thao Tác",
       key: "actions",
@@ -186,6 +184,7 @@ const DeleteBook: React.FC = () => {
           <div className="text-body-bold bg-white rounded uppercase py-[14px]">
             Quản lý sách đã xóa
           </div>
+          <Link href={"/admin/book"} > <Button type="primary">Quay Lại</Button></Link>
         </div>
         <Table
           columns={columns}
