@@ -24,8 +24,6 @@ const Statistical = () => {
     const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
     const [selectedMonth, setSelectedMonth] = useState<number | undefined>(undefined);
 
-
-    // ✅ Xây dựng URL động
     const baseUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/stats/revenue`;
     const queryParams = new URLSearchParams();
     if (selectedYear) queryParams.append("year", selectedYear.toString());

@@ -82,7 +82,7 @@ const TableOrders = () => {
             key: 'id',
         },
         {
-            title: 'Khach Hàng',
+            title: 'Khách Hàng',
             dataIndex: 'fullName',
             key: 'fullName',
         },

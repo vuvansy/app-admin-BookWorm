@@ -27,6 +27,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCurrentApp } from "@/context/app.context";
 import { sendRequest } from "@/utils/api";
+import Image from 'next/image';
 
 type MenuItem = Required<MenuProps>['items'][number];
 const { Content, Footer, Sider } = Layout;
@@ -226,7 +227,23 @@ export default function AdminLayout({
                         onCollapse={(value) => setCollapsed(value)}
                     >
                         <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
-                            <Link href="/" className='text-bg-text'>Admin</Link>
+                            <Link href="/" className='text-bg-text'>
+                                <div className="relative w-[170px]">
+                                    <Image
+                                        src={"/icon/logo.png"}
+                                        alt={'logo BookWorm'}
+                                        width={0}
+                                        height={0}
+                                        sizes="100vw"
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                        }}
+                                        priority
+                                        className="w-full object-cover"
+                                    />
+                                </div>
+                            </Link>
                         </div>
                         <Menu
                             selectedKeys={[activeMenu]}
