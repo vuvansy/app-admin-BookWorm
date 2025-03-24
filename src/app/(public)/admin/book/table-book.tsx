@@ -17,8 +17,11 @@ import BookDetail from "./detail-book";
 import { sendRequest } from "@/utils/api";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-
-import { CSVLink } from "react-csv";
+const CSVLinkNoSSR = dynamic(
+  () => import("react-csv").then((mod) => mod.CSVLink),
+  { ssr: false }
+);
+// import { CSVLink } from "react-csv";
 
 const csvHeaders = [
   { label: "ID", key: "_id" },
@@ -28,7 +31,7 @@ const csvHeaders = [
   { label: "Nhà Xuất Bản", key: "publishers" },
   { label: "Giá Mới", key: "price_new" },
   { label: "Giá Cũ", key: "price_old" },
-  // {label:  "Mô Tả", key: "description"}
+  {label:  "Mô Tả", key: "description"}
 ];
 
 function transformDataForCSV(books: IBookTable[]) {
@@ -40,7 +43,7 @@ function transformDataForCSV(books: IBookTable[]) {
     publishers: book.publishers || "",
     price_new: book.price_new || 0,
     price_old: book.price_old || 0,
-    // description: book.description || "",
+    description: book.description || "",
   }));
 }
 
@@ -239,7 +242,7 @@ const TableBook: React.FC = () => {
       ),
     },
   ];
-  const csvDataTransformed = transformDataForCSV(exportData);
+   const csvDataTransformed = transformDataForCSV(exportData);
   return (
     <div className="p-2">
       <div className="bg-white rounded h-[80px] pt-6 px-[15px]">
@@ -261,14 +264,7 @@ const TableBook: React.FC = () => {
               </Button>
             </Tooltip>
             </Link>
-
-            <CSVLink
-                             data={csvDataTransformed}
-                            filename='export-book.csv'
-                         >
-                             Export
-                         </CSVLink>
-            {/* <CSVLink 
+            <CSVLinkNoSSR 
               headers={csvHeaders}
               data={csvDataTransformed}
               filename="danh_sach_sach.csv"
@@ -276,7 +272,7 @@ const TableBook: React.FC = () => {
               <Button icon={<ExportOutlined />} type="primary">
                 Export
               </Button>
-            </CSVLink> */}
+            </CSVLinkNoSSR>
             <Button
               icon={<PlusOutlined />}
               type="primary"
