@@ -7,6 +7,7 @@ import {
   Divider,
   Select,
   message,
+  InputNumber,
 } from "antd";
 import dayjs from "dayjs";
 
@@ -57,7 +58,7 @@ const EditGiftVoucherModal: React.FC<EditCoupon> = ({
         const updatedCoupon = await response.json();
         if (updatedCoupon.data) {
           message.success("Cập nhật coupon thành công.");
-          onSubmit(updatedCoupon.data); 
+          onSubmit(updatedCoupon.data);
           onClose();
         } else {
           message.error(updatedCoupon.message);
@@ -79,6 +80,7 @@ const EditGiftVoucherModal: React.FC<EditCoupon> = ({
       okText="Lưu"
       cancelText="Hủy"
       destroyOnClose
+      width={"60vw"}
       style={{ top: 20 }}
     >
       <Divider />
@@ -95,13 +97,20 @@ const EditGiftVoucherModal: React.FC<EditCoupon> = ({
           </Form.Item>
           <Form.Item
             className="basis-1/2 !mb-5"
-            label="Phần trăm giảm %"
+            label="Phần Trăm Giảm "
             name="value"
             rules={[
               { required: true, message: "Vui lòng nhập phần trăm giảm giá" },
             ]}
           >
-            <Input type="number" />
+            <InputNumber
+              min={1}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              addonAfter=" %"
+            />
           </Form.Item>
         </div>
         <div className="flex gap-5">
@@ -136,14 +145,13 @@ const EditGiftVoucherModal: React.FC<EditCoupon> = ({
               { required: true, message: "Vui lòng nhập giá trị tối đa" },
             ]}
           >
-            <Input
-              type="number"
-              suffix={
-                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
-                  đ
-                </span>
+            <InputNumber
+              min={1}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
-              className="text-right !pr-0 !py-0"
+              addonAfter=" đ"
             />
           </Form.Item>
           <Form.Item
@@ -157,21 +165,20 @@ const EditGiftVoucherModal: React.FC<EditCoupon> = ({
               },
             ]}
           >
-            <Input
-              type="number"
-              suffix={
-                <span className="bg-gray-200 px-3 py-1 rounded-r-md text-black font-medium flex items-center">
-                  đ
-                </span>
+            <InputNumber
+              min={1}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
-              className="text-right !pr-0 !py-0"
+              addonAfter=" đ"
             />
           </Form.Item>
         </div>
         <div className="flex gap-5">
           <Form.Item
             className="basis-1/2 !mb-5"
-            label="Ngày bắt đầu"
+            label="Ngày Bắt Đầu"
             name="start_date"
             rules={[{ required: true, message: "Vui lòng nhập ngày bắt đầu" }]}
           >
@@ -183,7 +190,7 @@ const EditGiftVoucherModal: React.FC<EditCoupon> = ({
           </Form.Item>
           <Form.Item
             className="basis-1/2 !mb-5"
-            label="Ngày kết thúc"
+            label="Ngày Kết Thúc"
             name="end_date"
             rules={[{ required: true, message: "Vui lòng nhập ngày kết thúc" }]}
           >

@@ -27,6 +27,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCurrentApp } from "@/context/app.context";
 import { sendRequest } from "@/utils/api";
+import Image from 'next/image';
 
 type MenuItem = Required<MenuProps>['items'][number];
 const { Content, Footer, Sider } = Layout;
@@ -132,19 +133,21 @@ export default function AdminLayout({
     useEffect(() => {
         const fetchAccount = async () => {
             const accessToken = localStorage.getItem("access_token");
-            if (!accessToken) return;
-
-            const res = await sendRequest<IBackendRes<IFetchAccount>>({
-                url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                // useCredentials: true,
-            })
-            if (res.data) {
-                setUser(res.data.user)
-                setIsAuthenticated(true);
+            if (!accessToken) {
+                router.push('/login');
+            } else {
+                const res = await sendRequest<IBackendRes<IFetchAccount>>({
+                    url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    // useCredentials: true,
+                })
+                if (res.data) {
+                    setUser(res.data.user)
+                    setIsAuthenticated(true);
+                }
             }
         }
         fetchAccount();
@@ -224,7 +227,23 @@ export default function AdminLayout({
                         onCollapse={(value) => setCollapsed(value)}
                     >
                         <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
-                            <Link href="/" className='text-bg-text'>Admin</Link>
+                            <Link href="/" className='text-bg-text'>
+                                <div className="relative w-[170px]">
+                                    <Image
+                                        src={"/icon/logo.png"}
+                                        alt={'logo BookWorm'}
+                                        width={0}
+                                        height={0}
+                                        sizes="100vw"
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                        }}
+                                        priority
+                                        className="w-full object-cover"
+                                    />
+                                </div>
+                            </Link>
                         </div>
                         <Menu
                             selectedKeys={[activeMenu]}
@@ -252,7 +271,7 @@ export default function AdminLayout({
                             </span>
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: "pointer" }}>
-                                    <Avatar src={`${process.env.NEXT_PUBLIC_API_ENDPOINT}/images/avatar/${user?.image}`} />
+                                    <Avatar src={'/avatar/avatar.jpg'} />
                                     Xin Chào, {user?.fullName}
                                     <CaretDownOutlined />
                                 </Space>

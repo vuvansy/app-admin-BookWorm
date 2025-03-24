@@ -5,6 +5,7 @@ import { App, Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useCurrentApp } from '@/context/app.context';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 type FieldType = {
     email: string;
@@ -76,8 +77,9 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="w-full max-w-[800px] mx-auto mt-5">
-            <div className="text-heading3 flex items-center justify-center">Đăng Nhập</div>
+        <div className="w-full max-w-[400px] mx-auto mt-5">
+            <Image src={'/icon/logo.png'} alt="BookWorm" width={350} height={0} className='mx-auto mb-7 mt-10' />
+            <div className="text-heading3 flex items-center justify-center">QUẢN TRỊ VIÊN</div>
             <Form
                 name="basic"
                 className='max-w-[800px] !pt-5'
@@ -104,13 +106,13 @@ const LoginForm = () => {
 
                 <Button type="primary" danger htmlType="submit" className='w-full'>Đăng Nhập</Button>
 
-                <div className='my-[10px] text-body1 items-center flex justify-between'>
+                {/* <div className='my-[10px] text-body1 items-center flex justify-between'>
                     <span>Bạn chưa có tài khoản? <Link href="/register" className='text-red1'>Đăng ký ngay</Link></span>
                 </div>
 
                 <div className='mb-[10px] text-body1 items-center flex justify-between'>
                     <Link href="/forgot-password" className='text-red1'>Quên mật khẩu</Link>
-                </div>
+                </div> */}
             </Form>
         </div>
     );

@@ -10,6 +10,8 @@ import ModalAdd from "./modal-add";
 import { sendRequest } from '@/utils/api'
 import { ColumnsType } from "antd/es/table";
 import FilterForm from "./form-filter";
+import ImportUser from "./data/import.user";
+import { CSVLink } from "react-csv";
 
 type UserData = {
     meta: {
@@ -27,12 +29,16 @@ const UserTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [reloadData, setReloadData] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+
+    const [openModalImport, setOpenModalImport] = useState<boolean>(false);
+    const [currentDataTable, setCurrentDataTable] = useState<IUserTable[]>([]);
+
     const [selectedUser, setSelectedUser] = useState<IUserTable | null>(null);
     const [user, setUser] = useState<IUserTable[]>([]);
     const [loading, setLoading] = useState(false);
     const [meta, setMeta] = useState({
         page: 1,
-        limit: 5,
+        limit: 10,
         pages: 0,
         total: 0,
     });
@@ -54,7 +60,7 @@ const UserTable = () => {
 
             if (res?.data) {
                 console.log("Dữ liệu nhận được:", res.data);
-
+                setCurrentDataTable(res.data?.result ?? [])
                 if (res.data.result && Array.isArray(res.data.result)) {
                     // Đã sort trên server nên không cần sort lại ở client
                     setUser(res.data.result);
@@ -229,8 +235,22 @@ const UserTable = () => {
                         Quản lý người dùng
                     </div>
                     <div className=" flex space-x-2 items-center">
-                        <Button icon={<ExportOutlined />} type="primary">Export</Button>
-                        <Button icon={<ImportOutlined />} type="primary">Import</Button>
+                        <Button
+                            icon={<ExportOutlined />}
+                            type="primary">
+                            <CSVLink
+                                data={currentDataTable}
+                                filename='export-user.csv'
+                            >
+                                Export
+                            </CSVLink>
+                        </Button>
+                        <Button
+                            icon={<ImportOutlined />}
+                            type="primary"
+                            onClick={() => setOpenModalImport(true)}
+                        >Import
+                        </Button>
                         <Button icon={<PlusOutlined />} type="primary" onClick={() => setOpenAdd(true)}>Thêm mới</Button>
                     </div>
                 </div>
@@ -271,6 +291,10 @@ const UserTable = () => {
                     onUserAdded={handleUserAdded} // Truyền hàm handleUserAdded vào ModalAdd
                 />
                 <ModalEdit openEdit={openEdit} user={selectedUser} setOpenEdit={setOpenEdit} onSuccess={fetchUser} />
+                <ImportUser
+                    openModalImport={openModalImport}
+                    setOpenModalImport={setOpenModalImport}
+                />
             </div>
         </>
     );
