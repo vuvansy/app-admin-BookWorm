@@ -10,6 +10,7 @@ import ModalAdd from "./modal-add";
 import { sendRequest } from '@/utils/api'
 import { ColumnsType } from "antd/es/table";
 import FilterForm from "./form-filter";
+import ImportUser from "./data/import.user";
 
 type UserData = {
     meta: {
@@ -27,6 +28,9 @@ const UserTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [reloadData, setReloadData] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+
+    const [openModalImport, setOpenModalImport] = useState<boolean>(false);
+
     const [selectedUser, setSelectedUser] = useState<IUserTable | null>(null);
     const [user, setUser] = useState<IUserTable[]>([]);
     const [loading, setLoading] = useState(false);
@@ -230,7 +234,12 @@ const UserTable = () => {
                     </div>
                     <div className=" flex space-x-2 items-center">
                         <Button icon={<ExportOutlined />} type="primary">Export</Button>
-                        <Button icon={<ImportOutlined />} type="primary">Import</Button>
+                        <Button
+                            icon={<ImportOutlined />}
+                            type="primary"
+                            onClick={() => setOpenModalImport(true)}
+                        >Import
+                        </Button>
                         <Button icon={<PlusOutlined />} type="primary" onClick={() => setOpenAdd(true)}>Thêm mới</Button>
                     </div>
                 </div>
@@ -271,6 +280,10 @@ const UserTable = () => {
                     onUserAdded={handleUserAdded} // Truyền hàm handleUserAdded vào ModalAdd
                 />
                 <ModalEdit openEdit={openEdit} user={selectedUser} setOpenEdit={setOpenEdit} onSuccess={fetchUser} />
+                <ImportUser
+                    openModalImport={openModalImport}
+                    setOpenModalImport={setOpenModalImport}
+                />
             </div>
         </>
     );
