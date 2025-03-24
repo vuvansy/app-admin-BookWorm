@@ -16,6 +16,11 @@ import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import { UploadChangeParam } from "antd/es/upload";
 import { MAX_UPLOAD_IMAGE_SIZE } from "@/services/helper";
 import { sendRequest } from "@/utils/api";
+import dynamic from "next/dynamic";
+
+const CKEditorNoSSR = dynamic(() => import("./CKEditorWrapper"), {
+  ssr: false,
+});
 
 const extractFilename = (url: string) => {
   if (!url) return "";
@@ -317,10 +322,12 @@ const EditBook: React.FC<EditBookProps> = ({
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   const oldPrice = getFieldValue("price_old");
-                  if (!value || (oldPrice && value < oldPrice)) {
+                  if (!value || (oldPrice && value <= oldPrice)) {
                     return Promise.resolve();
                   }
-                  return Promise.reject("Giá mới phải nhỏ hơn giá cũ!");
+                  return Promise.reject(
+                    "Giá mới phải nhỏ hơn hoặc bằng giá cũ!"
+                  );
                 },
               }),
             ]}
@@ -424,23 +431,31 @@ const EditBook: React.FC<EditBookProps> = ({
           <Form.Item
             label="Loại Bìa"
             name="book_cover"
-            initialValue=""
             className="!mb-0"
-            rules={[{ required: true, message: "Vui lòng nhập hình thức" }]}
+            rules={[{ required: true, message: "Vui lòng chọn loại bìa" }]}
           >
-            <Input className="w-full" />
+            <Select placeholder="Chọn loại bìa">
+              <Select.Option value="bìa cứng">Bìa cứng</Select.Option>
+              <Select.Option value="bìa mềm">Bìa mềm</Select.Option>
+            </Select>
           </Form.Item>
+
           <div></div>
           <div></div>
         </div>
 
         {/* Mô tả sản phẩm */}
         <Form.Item
-          label="Mô tả sản phẩm"
+          label="Mô Tả Sản Phẩm"
           name="description"
           rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
         >
-          <Input.TextArea rows={3} className="w-full" />
+          <CKEditorNoSSR
+            value={form.getFieldValue("description") || ""}
+            onChange={(data) => {
+              form.setFieldValue("description", data);
+            }}
+          />
         </Form.Item>
 
         {/* Ảnh Thumbnail - Ảnh Slider */}

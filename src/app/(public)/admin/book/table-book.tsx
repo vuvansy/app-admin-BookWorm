@@ -16,6 +16,33 @@ import BookDetail from "./detail-book";
 
 import { sendRequest } from "@/utils/api";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+import { CSVLink } from "react-csv";
+
+const csvHeaders = [
+  { label: "ID", key: "_id" },
+  { label: "Tên Sách", key: "name" },
+  { label: "Tác Giả", key: "authors" },
+  { label: "Thể Loại", key: "id_genre" },
+  { label: "Nhà Xuất Bản", key: "publishers" },
+  { label: "Giá Mới", key: "price_new" },
+  { label: "Giá Cũ", key: "price_old" },
+  // {label:  "Mô Tả", key: "description"}
+];
+
+function transformDataForCSV(books: IBookTable[]) {
+  return books.map((book) => ({
+    _id: book._id,
+    name: book.name,
+    authors: book.authors?.map((author) => author.name).join(", ") || "",
+    id_genre: book.id_genre?.name || "",
+    publishers: book.publishers || "",
+    price_new: book.price_new || 0,
+    price_old: book.price_old || 0,
+    // description: book.description || "",
+  }));
+}
 
 type BookData = {
   meta: {
@@ -28,6 +55,7 @@ type BookData = {
 };
 const TableBook: React.FC = () => {
   const [books, setBooks] = useState<IBookTable[]>([]);
+  const [exportData, setExportData] = useState<IBookTable[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedBook, setSelectedBook] = useState<IBookTable | null>(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -56,9 +84,12 @@ const TableBook: React.FC = () => {
       // console.log(" API Response:", res);
       if (res.data && res.data.meta) {
         setBooks(res.data.result);
+        setExportData(res.data.result);
         setMeta(res.data.meta); 
       } else if (res.data) {
-        setBooks(res.data as unknown as IBookTable[]);
+        const data = res.data as unknown as IBookTable[];
+        setBooks(data);
+        setExportData(data);
       }
     } catch (error) {
       console.error("Lỗi khi lấy sách:", error);
@@ -67,6 +98,7 @@ const TableBook: React.FC = () => {
 
   useEffect(() => {
     fetchBooks();
+    // console.log(meta.page);
   }, [meta.page, meta.limit, searchTerm])
   
   const handleSearch = (values: any) => {
@@ -207,7 +239,7 @@ const TableBook: React.FC = () => {
       ),
     },
   ];
-
+  const csvDataTransformed = transformDataForCSV(exportData);
   return (
     <div className="p-2">
       <div className="bg-white rounded h-[80px] pt-6 px-[15px]">
@@ -229,9 +261,22 @@ const TableBook: React.FC = () => {
               </Button>
             </Tooltip>
             </Link>
-            <Button icon={<ExportOutlined />} type="primary">
-              Export
-            </Button>
+
+            <CSVLink
+                             data={csvDataTransformed}
+                            filename='export-book.csv'
+                         >
+                             Export
+                         </CSVLink>
+            {/* <CSVLink 
+              headers={csvHeaders}
+              data={csvDataTransformed}
+              filename="danh_sach_sach.csv"
+               >
+              <Button icon={<ExportOutlined />} type="primary">
+                Export
+              </Button>
+            </CSVLink> */}
             <Button
               icon={<PlusOutlined />}
               type="primary"

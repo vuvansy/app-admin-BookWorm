@@ -162,8 +162,8 @@ const BookDetail: React.FC<BookDetailProps> = ({ book, visible, onClose }) => {
               <div className="w-[15%] leading-[60px] flex items-center justify-center bg-bg-main border border-black/10">
                 Mô Tả
               </div>
-              <div className="w-[85%] leading-[20px] flex border border-bg-main px-[15px] pt-[10px]">
-                {book.description}
+              <div className="w-[85%]  border border-bg-main px-[15px] pt-[10px] description-content " dangerouslySetInnerHTML={{ __html: book.description || "" }}>
+                {/* {book.description} */}
               </div>
             </div>
           </div>
