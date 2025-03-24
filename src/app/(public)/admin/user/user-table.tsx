@@ -11,6 +11,7 @@ import { sendRequest } from '@/utils/api'
 import { ColumnsType } from "antd/es/table";
 import FilterForm from "./form-filter";
 import ImportUser from "./data/import.user";
+import { CSVLink } from "react-csv";
 
 type UserData = {
     meta: {
@@ -30,6 +31,7 @@ const UserTable = () => {
     const [openEdit, setOpenEdit] = useState(false);
 
     const [openModalImport, setOpenModalImport] = useState<boolean>(false);
+    const [currentDataTable, setCurrentDataTable] = useState<IUserTable[]>([]);
 
     const [selectedUser, setSelectedUser] = useState<IUserTable | null>(null);
     const [user, setUser] = useState<IUserTable[]>([]);
@@ -58,7 +60,7 @@ const UserTable = () => {
 
             if (res?.data) {
                 console.log("Dữ liệu nhận được:", res.data);
-
+                setCurrentDataTable(res.data?.result ?? [])
                 if (res.data.result && Array.isArray(res.data.result)) {
                     // Đã sort trên server nên không cần sort lại ở client
                     setUser(res.data.result);
@@ -233,7 +235,16 @@ const UserTable = () => {
                         Quản lý người dùng
                     </div>
                     <div className=" flex space-x-2 items-center">
-                        <Button icon={<ExportOutlined />} type="primary">Export</Button>
+                        <Button
+                            icon={<ExportOutlined />}
+                            type="primary">
+                            <CSVLink
+                                data={currentDataTable}
+                                filename='export-user.csv'
+                            >
+                                Export
+                            </CSVLink>
+                        </Button>
                         <Button
                             icon={<ImportOutlined />}
                             type="primary"
