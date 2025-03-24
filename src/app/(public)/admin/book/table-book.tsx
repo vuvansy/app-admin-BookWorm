@@ -21,7 +21,7 @@ const CSVLinkNoSSR = dynamic(
   () => import("react-csv").then((mod) => mod.CSVLink),
   { ssr: false }
 );
-// import { CSVLink } from "react-csv";
+
 
 const csvHeaders = [
   { label: "ID", key: "_id" },
@@ -31,8 +31,17 @@ const csvHeaders = [
   { label: "Nhà Xuất Bản", key: "publishers" },
   { label: "Giá Mới", key: "price_new" },
   { label: "Giá Cũ", key: "price_old" },
-  {label:  "Mô Tả", key: "description"}
+  { label: "Số Lượng", key: "quantity" },
+  { label: "Khối Lượng", key: "weight" },
+  { label: "Kích Thước", key: "size" },
+  { label: "Năm Xuất Bản", key: "year" },
+  { label: "Số Trang", key: "page_count" },
+  { label: "Bìa Sách", key: "book_cover" },
+  { label: "Ngày Tạo", key: "createdAt" },
+  { label: "Ngày Cập Nhật", key: "updatedAt" },
+  { label: "Mô Tả", key: "description" },
 ];
+
 
 function transformDataForCSV(books: IBookTable[]) {
   return books.map((book) => ({
@@ -41,11 +50,20 @@ function transformDataForCSV(books: IBookTable[]) {
     authors: book.authors?.map((author) => author.name).join(", ") || "",
     id_genre: book.id_genre?.name || "",
     publishers: book.publishers || "",
-    price_new: book.price_new || 0,
-    price_old: book.price_old || 0,
+    price_new: book.price_new,
+    price_old: book.price_old,
+    quantity: book.quantity,
+    weight: book.weight !== undefined ? book.weight : "",
+    size: book.size || "",
+    year: book.year || "",
+    page_count: book.page_count || "",
+    book_cover: book.book_cover || "",
+    createdAt: book.createdAt ? new Date(book.createdAt).toISOString() : "",
+    updatedAt: book.updatedAt ? new Date(book.updatedAt).toISOString() : "",
     description: book.description || "",
   }));
 }
+
 
 type BookData = {
   meta: {
