@@ -67,6 +67,19 @@ const Statistical = () => {
     };
     if (error || !data?.data) return <p>Lỗi khi tải dữ liệu!</p>;
 
+    const getChartTitle = () => {
+        if (selectedYear && selectedMonth) {
+            if (selectedMonth === 0) {
+                return `Biểu đồ doanh thu năm ${selectedYear}`;
+            }
+            return `Biểu đồ doanh thu tuần của tháng ${selectedMonth} năm ${selectedYear}`;
+        }
+        if (selectedYear) {
+            return `Biểu đồ doanh thu năm ${selectedYear}`;
+        }
+        return "Biểu đồ doanh thu 6 tháng gần đây";
+    };
+
     const yearOptions = [
         { value: 2021, label: "Năm 2021" },
         { value: 2022, label: "Năm 2022" },
@@ -96,7 +109,7 @@ const Statistical = () => {
         <>
             <div className="basis-8/12 bg-white px-[15px] py-[20px] rounded border">
                 <div className="flex justify-between">
-                    <h2 className="text-body-bold pb-[10px]">Biểu Đồ Doanh Thu</h2>
+                    <h2 className="text-body-bold pb-[10px]">{getChartTitle()}</h2>
                     <div className="flex gap-5">
                         <Select
                             style={{ width: 120 }}
@@ -132,6 +145,9 @@ const Statistical = () => {
                                 },
 
                             ],
+                        }}
+                        options={{
+                            responsive: true,
                         }}
                     />
                 </div>
