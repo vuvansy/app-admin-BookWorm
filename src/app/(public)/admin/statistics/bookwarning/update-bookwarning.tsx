@@ -16,14 +16,8 @@ const UpdateBookWarning: React.FC<UpdateBookWarningProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [newQuantity, setNewQuantity] = useState<number>(1);
+  const [newQuantity, setNewQuantity] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (book?.quantity !== undefined) {
-      setNewQuantity(1);
-    }
-  }, [book]);
 
   const handleUpdateQuantity = async () => {
     if (!book || !book._id) {
@@ -43,9 +37,9 @@ const UpdateBookWarning: React.FC<UpdateBookWarningProps> = ({
       );
 
       if (!response.ok) throw new Error("Cập nhật thất bại!");
-
       message.success("Cập nhật số lượng thành công!");
       onSuccess();
+      setNewQuantity("");
       onClose();
     } catch (error) {
       message.error("Lỗi khi cập nhật số lượng!");
@@ -78,7 +72,6 @@ const UpdateBookWarning: React.FC<UpdateBookWarningProps> = ({
             Số lượng hiện có: <strong>{book.quantity}</strong>
           </p>
           <InputNumber
-            min={1}
             value={newQuantity}
             onChange={(value) => {
               if (typeof value === "number") {
