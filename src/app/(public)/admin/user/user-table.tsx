@@ -15,10 +15,55 @@ import ImportUser from "./data/import.user";
 import dynamic from "next/dynamic";
 
 const CSVLinkNoSSR = dynamic(
-  () => import("react-csv").then((mod) => mod.CSVLink),
-  { ssr: false }
+    () => import("react-csv").then((mod) => mod.CSVLink),
+    { ssr: false }
 );
 
+const csvHeaders = [
+    { label: "Địa Chỉ", key: "address" },
+    { label: "ID", key: "_id" },
+    { label: "Tên Người Dùng", key: "fullName" },
+    { label: "Email", key: "email" },
+    { label: "Ảnh", key: "image" },
+    { label: "Ủy Quyền", key: "role" },
+    { label: "Trạng Thái", key: "isBlocked" },
+    { label: "Mật Khẩu", key: "password" },
+    { label: "Kích Hoạt", key: "isActive" },
+    { label: "Token", key: "reset_token" },
+    { label: "Ngày Tạo", key: "createdAt" },
+    { label: "Ngày Cập Nhật", key: "updatedAt" },
+];
+
+const formatAddress = (address: any) => {
+    if (!address) return "";
+
+    const parts = [];
+
+    if (address.street) parts.push(address.street);
+    if (address.ward && address.ward.name) parts.push(address.ward.name);
+    if (address.district && address.district.name) parts.push(address.district.name);
+    if (address.city && address.city.name) parts.push(address.city.name);
+
+    // Join only non-empty parts with commas
+    return parts.join(", ");
+};
+
+const transformDataForCSV = (users: IUserTable[]) => {
+    return users.map(user => ({
+        address: formatAddress(user.address),
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        image: user.image,
+        role: user.role,
+        isBlocked: user.isBlocked ? 'Đã khóa' : 'Đang hoạt động',
+        password: user.password,
+        isActive: user.isActive ? 'Tắt kích hoạt' : 'Đang kích hoạt',
+        reset_token: user.reset_token,
+        createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A',
+        updatedAt: user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A',
+    }));
+}
 
 
 type UserData = {
@@ -37,7 +82,7 @@ const UserTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [reloadData, setReloadData] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
-
+    const [exportData, setExportData] = useState<IUserTable[]>([]);
     const [openModalImport, setOpenModalImport] = useState<boolean>(false);
     const [currentDataTable, setCurrentDataTable] = useState<IUserTable[]>([]);
 
@@ -67,10 +112,9 @@ const UserTable = () => {
             });
 
             if (res?.data) {
-                console.log("Dữ liệu nhận được:", res.data);
                 setCurrentDataTable(res.data?.result ?? [])
                 if (res.data.result && Array.isArray(res.data.result)) {
-                    // Đã sort trên server nên không cần sort lại ở client
+                    setExportData(res.data.result);
                     setUser(res.data.result);
 
                     if (res.data.meta) {
@@ -213,7 +257,7 @@ const UserTable = () => {
             dataIndex: 'isBlocked',
             render: (isBlocked: boolean, record) => (
                 <Popconfirm
-                    placement="top"               
+                    placement="top"
                     title={`${isBlocked ? 'Mở khóa' : 'Khóa'} tài khoản`}
                     description={`Bạn có chắc chắn muốn ${isBlocked ? 'mở khóa' : 'khóa'} tài khoản của ${record.fullName}?`}
                     onConfirm={() => handleToggleUserStatus(!isBlocked, record._id)}
@@ -234,6 +278,7 @@ const UserTable = () => {
             ),
         },
     ];
+    const csvDataTransformed = transformDataForCSV(exportData);
 
     return (
         <>
@@ -247,8 +292,9 @@ const UserTable = () => {
                         <Button
                             icon={<ExportOutlined />}
                             type="primary">
-                          <CSVLinkNoSSR
-                                data={currentDataTable}
+                            <CSVLinkNoSSR
+                                headers={csvHeaders}
+                                data={csvDataTransformed}
                                 filename='export-user.csv'
                             >
                                 Export
