@@ -43,6 +43,7 @@ export default function AdminLayout({
     const [activeMenu, setActiveMenu] = useState('');
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const router = useRouter();
+    const [isModelLogout, setIsModelLogout] = useState(false);
 
 
     const handleLogout = async () => {
@@ -196,17 +197,21 @@ export default function AdminLayout({
         },
         {
             label: (
-                <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-2"
+                    onClick={() => setIsModelLogout(true)}
+                >
                     <TbLogout className="text-[18px]" />
-                    <Popconfirm
+                    {/* <Popconfirm
+                        placement='topRight'
                         title="Xác nhận đăng xuất"
                         description="Bạn có chắc chắn muốn đăng xuất không?"
                         onConfirm={handleLogout}
                         okText="Có"
                         cancelText="Hủy"
                     >
-                        <span style={{ cursor: 'pointer' }}>Đăng xuất</span>
-                    </Popconfirm>
+                        
+                    </Popconfirm> */}
+                    <span style={{ cursor: 'pointer' }}>Đăng xuất</span>
                 </div>
             ),
             key: 'logout',
@@ -285,6 +290,18 @@ export default function AdminLayout({
                         </Footer>
                     </Layout>
                 </Layout>
+                <Modal
+                    title="Xác nhận đăng xuất"
+                    open={isModelLogout}
+                    onOk={handleLogout}
+                    onCancel={() => setIsModelLogout(false)}
+                    okText="Có"
+                    cancelText="Hủy"
+                // okButtonProps={{ danger: true }}
+                >
+                    <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+                </Modal>
+
             </App>
         </>
     );
