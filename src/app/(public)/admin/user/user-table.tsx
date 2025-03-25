@@ -20,10 +20,10 @@ const CSVLinkNoSSR = dynamic(
 );
 
 const csvHeaders = [
-    { label: "Địa Chỉ", key: "address" },
     { label: "ID", key: "_id" },
     { label: "Tên Người Dùng", key: "fullName" },
     { label: "Email", key: "email" },
+    { label: "Địa Chỉ", key: "address" },
     { label: "Ảnh", key: "image" },
     { label: "Ủy Quyền", key: "role" },
     { label: "Trạng Thái", key: "isBlocked" },
@@ -50,10 +50,10 @@ const formatAddress = (address: any) => {
 
 const transformDataForCSV = (users: IUserTable[]) => {
     return users.map(user => ({
-        address: formatAddress(user.address),
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
+        address: formatAddress(user.address),
         image: user.image,
         role: user.role,
         isBlocked: user.isBlocked ? 'Đã khóa' : 'Đang hoạt động',
