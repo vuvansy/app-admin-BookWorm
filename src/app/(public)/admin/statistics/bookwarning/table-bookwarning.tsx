@@ -1,33 +1,20 @@
 "use client";
 import React, { useState } from "react";
+import useSWR from "swr";
 import { Button, Table, TableColumnsType } from "antd";
 import Image from "next/image";
 import UpdateBookWarning from "./update-bookwarning";
 
-interface TableFeedbackProps {
-  data: IBookTable[];
-}
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const TableBookWarning: React.FC<TableFeedbackProps> = ({ data }) => {
+const TableBookWarning: React.FC = () => {
+  const { data, error, isLoading, mutate } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/books/low-stock`,
+    fetcher
+  );
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingBook, setEditingBook] = useState<IBookTable | null>(null);
-  const [books, setBooks] = useState<IBookTable[]>(data);
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/books/low-stock`
-      );
-      if (!res.ok) {
-        throw new Error("Lỗi API: " + res.status);
-      }
-      const warningData = await res.json();
-      const books = Array.isArray(warningData.data) ? warningData.data : [];
-      setBooks(books);
-    } catch (error) {
-      console.error("Lỗi khi tải lại dữ liệu:", error);
-    }
-  };
 
   const showEditModal = (book: IBookTable) => {
     setEditingBook(book);
@@ -38,6 +25,10 @@ const TableBookWarning: React.FC<TableFeedbackProps> = ({ data }) => {
     setEditingBook(null);
     setIsModalVisible(false);
   };
+
+  if (error) return <p className="text-red-500">Lỗi khi tải dữ liệu!</p>;
+
+  const books: IBookTable[] = Array.isArray(data?.data) ? data.data : [];
 
   const columns: TableColumnsType<IBookTable> = [
     {
@@ -91,14 +82,13 @@ const TableBookWarning: React.FC<TableFeedbackProps> = ({ data }) => {
         rowKey="_id"
         size="small"
         className="ant-table-striped mt-5"
+        loading={isLoading}
       />
       <UpdateBookWarning
         book={editingBook}
         isVisible={isModalVisible}
         onClose={hideEditModal}
-        onSuccess={() => {
-          fetchData();
-        }}
+        onSuccess={() => mutate()} 
       />
     </div>
   );
