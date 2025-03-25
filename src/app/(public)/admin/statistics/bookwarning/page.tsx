@@ -1,36 +1,16 @@
+import { sendRequest } from "@/utils/api";
 import TableBookWarning from "./table-bookwarning";
 
-const ProductsWarningPage: React.FC = () => {
-  const warningData = [
-    {
-      key: "1",
-      image: "/product.webp",
-      name: "Nhóc Miko! Cô Bé Nhí Nhảnh - Tập 38",
-      quantity: 5,
-    },
-    {
-      key: "2",
-      image: "/product.webp",
-      name: "Nhóc Miko! Cô Bé Nhí Nhảnh - Tập 38",
-      quantity: 2,
-    },
-    {
-      key: "3",
-      image: "/product.webp",
-      name: "Nhóc Miko! Cô Bé Nhí Nhảnh - Tập 38",
-      quantity: 5,
-    },
-    {
-      key: "4",
-      image: "/product.webp",
-      name: "Nhóc Miko! Cô Bé Nhí Nhảnh - Tập 38",
-      quantity: 7,
-    },
-  ];
+const ProductsWarningPage: React.FC = async () => {
+  const warningData = await sendRequest<{ data: IBookTable[] }>({
+    url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/books/low-stock`,
+    method: "GET",
+  });
+  const books = Array.isArray(warningData.data) ? warningData.data : [];
 
   return (
     <div>
-      <TableBookWarning data={warningData} />
+      <TableBookWarning data={books} />
     </div>
   );
 };
