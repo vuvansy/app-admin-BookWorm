@@ -55,6 +55,7 @@ export default function AdminLayout({
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
+            useCredentials: true,
         });
         if (res.data) {
             setUser(null);
