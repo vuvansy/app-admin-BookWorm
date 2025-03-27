@@ -65,7 +65,7 @@ const TableOrderWait = () => {
 
     const orderDetails = orderDetailData?.data;
 
-    if (orderLoading || orderDetailLoading ) {
+    if (orderLoading || orderDetailLoading) {
         return (
             <div className="flex items-center justify-center min-h-[300px]">
                 <Spin size="large">
@@ -316,6 +316,8 @@ const TableOrderWait = () => {
                             <div className="mb-2 text-right">
                                 <h3 className="font-semibold text-body1">Phương Thức Thanh Toán</h3>
                                 <p className="capitalize">{selectedOrder?.id_payment.name}</p>
+                                <p>{(selectedOrder?.isPaid) ? "✅ Đã thanh toán" : "⏳Chưa thanh toán"}</p>
+                                <p>{selectedOrder?.paidAt ? dayjs(selectedOrder?.paidAt).format("DD-MM-YYYY HH:mm:ss") : ""}</p>
                             </div>
                             <div className="mb-2 text-right">
                                 <h3 className="font-semibold text-body1">Phương Thức Vận Chuyển</h3>

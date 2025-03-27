@@ -105,6 +105,17 @@ const TableOrders = () => {
             ),
         },
         {
+            title: 'Thanh Toán',
+            key: 'isPaid',
+            dataIndex: 'isPaid',
+            align: "center",
+            render: (isPaid) => (
+                <div className="text-center leading-none">
+                    {isPaid ? "✅ Đã thanh toán" : "⏳Chưa thanh toán"}
+                </div>
+            ),
+        },
+        {
             title: 'Trạng Thái',
             key: 'status',
             dataIndex: 'status',

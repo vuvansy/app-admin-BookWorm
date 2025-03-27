@@ -159,15 +159,15 @@ const InfoOrder = () => {
 
     const getAvailableStatusOptions = (currentStatus: number) => {
         switch (currentStatus) {
-            case 0: // Chờ Xác Nhận
-                return statusOptions; // Hiển thị tất cả trạng thái
-            case 1: // Đã Xác Nhận
-                return statusOptions.filter(opt => opt.value !== "0"); // Ẩn "Chờ Xác Nhận"
-            case 2: // Đang Vận Chuyển
-                return statusOptions.filter(opt => !["0", "1", "4"].includes(opt.value)); // Ẩn "Chờ Xác Nhận", "Đã Xác Nhận", "Đã Hủy"
-            case 3: // Đã Giao Hàng
-            case 4: // Đã Hủy
-                return statusOptions.filter(opt => opt.value === currentStatus.toString()); // Chỉ giữ trạng thái hiện tại
+            case 0:
+                return statusOptions;
+            case 1:
+                return statusOptions.filter(opt => opt.value !== "0");
+            case 2:
+                return statusOptions.filter(opt => !["0", "1", "4"].includes(opt.value));
+            case 3:
+            case 4:
+                return statusOptions.filter(opt => opt.value === currentStatus.toString());
             default:
                 return [];
         }
@@ -219,6 +219,8 @@ const InfoOrder = () => {
                     <div className="mb-2 text-right">
                         <h3 className="font-semibold text-body1">Phương Thức Thanh Toán</h3>
                         <p className="capitalize">{order?.id_payment.name}</p>
+                        <p>{(order?.isPaid) ? "✅ Đã thanh toán" : "⏳Chưa thanh toán"}</p>
+                        <p>{order?.paidAt ? dayjs(order.paidAt).format("DD-MM-YYYY HH:mm:ss") : ""}</p>
                     </div>
                     <div className="mb-2 text-right">
                         <h3 className="font-semibold text-body1">Phương Thức Vận Chuyển</h3>
