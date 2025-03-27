@@ -3,18 +3,32 @@ import React, { useEffect, useState } from "react";
 
 
 import { Button, message, Popconfirm, PopconfirmProps, Space, Table } from "antd";
-import { DeleteTwoTone, EditTwoTone, PlusOutlined } from "@ant-design/icons";
+import { DeleteTwoTone, EditTwoTone, ExportOutlined, ImportOutlined, PlusOutlined } from "@ant-design/icons";
 import AddAuthor from "./add-author";
 import EditAuthor from "./edit-author";
 import { sendRequest } from "@/utils/api";
 import { ColumnsType } from "antd/es/table";
+import dynamic from "next/dynamic";
+import ImportAuthor from "@/app/(public)/admin/author/data/import.auhor";
 
+
+const CSVLinkNoSSR = dynamic(
+  () => import("react-csv").then((mod) => mod.CSVLink),
+  { ssr: false }
+);
+
+const csvHeaders = [
+    { label: "ID", key: "_id" },
+    { label: "Tên tác giả", key: "name" },
+  ];
+  
 
 const AuthorTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [author, setAuthor] = useState<IAuthorTable[]>([]);
     const [selectedAuthor, setSelectedAuthor] = useState<IAuthorTable | null>(null);
+    const [openModalImport, setOpenModalImport] = useState<boolean>(false);
     // const [currentPage, setCurrentPage] = useState(1);
     // const pageSize = 5;
     const fetchAuthor = async () => {
@@ -109,7 +123,22 @@ const AuthorTable = () => {
         <div>
             <div className="bg-white w rounded p-4">
                 <p className=" text-body-bold uppercase">Quản Lý Tác Giả</p>
-                <div className="flex justify-end pb-5">
+                <div className="flex justify-end pb-5 gap-2">
+                <CSVLinkNoSSR 
+                     headers={csvHeaders}
+                     data={author}
+                      filename="danh_sach_tac_gia.csv"
+               >
+              <Button icon={<ExportOutlined />} type="primary">
+                Export
+              </Button>
+            </CSVLinkNoSSR>
+            <Button
+                            icon={<ImportOutlined />}
+                            type="primary"
+                            onClick={() => setOpenModalImport(true)}
+                        >Import
+                        </Button>
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpenAdd(true)}>Thêm mới</Button>
                 </div>
 
@@ -134,6 +163,11 @@ const AuthorTable = () => {
                 author={selectedAuthor}
                 onSuccess={fetchAuthor}
             />
+              <ImportAuthor
+                    openModalImport={openModalImport}
+                    setOpenModalImport={setOpenModalImport}
+                    onSuccess={fetchAuthor}
+                />
         </div>
     );
 };
