@@ -13,6 +13,7 @@ const { Dragger } = Upload;
 interface IProps {
     openModalImport: boolean;
     setOpenModalImport: (v: boolean) => void;
+    onUserAdded?: () => void;
 }
 
 
@@ -23,7 +24,7 @@ interface IDataImport {
 }
 
 const ImportUser = (props: IProps) => {
-    const { setOpenModalImport, openModalImport } = props;
+    const { setOpenModalImport, openModalImport, onUserAdded } = props;
     const templateFileUrl = "/template/user_bookworm.xlsx";
 
 
@@ -135,6 +136,9 @@ const ImportUser = (props: IProps) => {
                 message: "Tạo người dùng hàng loạt thành công",
                 description: `Success = ${data?.data?.countSuccess || 0}. Error = ${data?.data?.countError || 0}`
             });
+            if (onUserAdded) {
+                onUserAdded();
+            }
 
             setDataImport([]);
             setOpenModalImport(false);

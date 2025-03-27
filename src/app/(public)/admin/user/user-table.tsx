@@ -349,6 +349,7 @@ const UserTable = () => {
                 <ImportUser
                     openModalImport={openModalImport}
                     setOpenModalImport={setOpenModalImport}
+                    onUserAdded={handleUserAdded}
                 />
             </div>
         </>
