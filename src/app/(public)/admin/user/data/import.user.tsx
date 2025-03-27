@@ -24,10 +24,13 @@ interface IDataImport {
 
 const ImportUser = (props: IProps) => {
     const { setOpenModalImport, openModalImport } = props;
-    const templateFileUrl = "/template/user.xlsx";
+    const templateFileUrl = "/template/user_bookworm.xlsx";
 
-    const { message } = App.useApp();
+
+    const { message, notification } = App.useApp();
     const [dataImport, setDataImport] = useState<IDataImport[]>([]);
+
+    const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
     const propsUpload: UploadProps = {
         name: 'file',
@@ -82,6 +85,10 @@ const ImportUser = (props: IProps) => {
 
                     });
 
+                    jsonData = jsonData.map((item, index) => {
+                        return { ...item, id: index + 1 }
+                    })
+
                     setDataImport(jsonData)
 
                 }
@@ -95,19 +102,67 @@ const ImportUser = (props: IProps) => {
         },
     };
 
+    const handleImport = async () => {
+        setIsSubmit(true);
+
+        const dataSubmit = dataImport.map(item => ({
+            fullName: item.fullName,
+            email: item.email,
+            phone: item.phone,
+            password: process.env.NEXT_PUBLIC_USER_CREATE_DEFAULT_PASSWORD
+        }));
+
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/user-many`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dataSubmit)
+            });
+
+            const data: IBackendRes<IResponseImport> = await res.json();
+
+            if (!res.ok) {
+                notification.error({
+                    message: "Tạo người dùng hàng loạt không thành công",
+                    description: `Success = ${data?.data?.countSuccess || 0}. Error = ${data?.data?.countError || 0}`
+                });
+                return;
+            }
+
+            notification.success({
+                message: "Tạo người dùng hàng loạt thành công",
+                description: `Success = ${data?.data?.countSuccess || 0}. Error = ${data?.data?.countError || 0}`
+            });
+
+            setDataImport([]);
+            setOpenModalImport(false);
+        } catch (error) {
+            console.error("Lỗi khi gọi API:", error);
+            notification.error({
+                message: "Bulk Create Users Failed",
+                description: "Không thể kết nối tới server!"
+            });
+        } finally {
+            setIsSubmit(false);
+        }
+    };
+
     return (
         <>
             <Modal title="Import data user"
                 width={"50vw"}
                 open={openModalImport}
-                onOk={() => setOpenModalImport(false)}
+                onOk={() => handleImport()}
                 onCancel={() => {
                     setOpenModalImport(false);
                     setDataImport([]);
                 }}
                 okText="Import data"
                 okButtonProps={{
-                    disabled: dataImport.length > 0 ? false : true
+                    disabled: dataImport.length > 0 ? false : true,
+                    loading: isSubmit
                 }}
                 //do not close when click outside
                 maskClosable={false}
@@ -132,6 +187,7 @@ const ImportUser = (props: IProps) => {
                 </Dragger>
                 <div style={{ paddingTop: 20 }}>
                     <Table
+                        rowKey={"id"}
                         title={() => <span>Dữ liệu upload:</span>}
                         dataSource={dataImport}
                         columns={[
