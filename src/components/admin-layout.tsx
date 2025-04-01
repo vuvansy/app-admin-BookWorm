@@ -73,14 +73,19 @@ export default function AdminLayout({
             icon: <AppstoreOutlined />
         },
         {
-            label: <Link href='/admin/user'>Người dùng</Link>,
-            key: '/admin/user',
-            icon: <UserOutlined />,
+            label: <Link href='/admin/order'>Đơn hàng</Link>,
+            key: '/admin/order',
+            icon: <DollarCircleOutlined />
         },
         {
             label: <Link href='/admin/banner'>Banner</Link>,
             key: '/admin/banner',
             icon: <FileImageOutlined />,
+        },
+        {
+            label: <Link href='/admin/user'>Người dùng</Link>,
+            key: '/admin/user',
+            icon: <UserOutlined />,
         },
         {
             label: <Link href='/admin/genre'>Danh mục</Link>,
@@ -106,11 +111,6 @@ export default function AdminLayout({
             label: <Link href='/admin/reviews'>Phản hồi</Link>,
             key: '/admin/reviews',
             icon: <CommentOutlined />
-        },
-        {
-            label: <Link href='/admin/order'>Đơn hàng</Link>,
-            key: '/admin/order',
-            icon: <DollarCircleOutlined />
         },
         {
             label: <span>Thống kê</span>,
