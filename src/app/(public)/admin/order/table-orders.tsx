@@ -21,7 +21,7 @@ const TableOrders = () => {
         total: 0
     });
     const [sortQuery, setSortQuery] = useState<string>("createdAt");
-    const [status, setStatus] = useState<string | undefined>(undefined); // Trạng thái đơn hàng
+    const [status, setStatus] = useState<string | undefined>("0");
 
     const params = new URLSearchParams({
         page: meta.page.toString(),
@@ -159,10 +159,10 @@ const TableOrders = () => {
     return (
         <>
             <Tabs
-                activeKey={status ?? ""}
+                activeKey={status ?? "0"}
                 items={items}
                 onChange={(value) => {
-                    setStatus(value || undefined);
+                    setStatus(value);
                     setMeta((prev) => ({ ...prev, page: 1 }));
                 }}
             />
