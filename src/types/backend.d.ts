@@ -43,12 +43,13 @@ declare global {
         refresh_token: string;
         user: {
             id: string;
-            email: string;
-            phone: string;
             fullName: string;
-            role: string;
-            image: string;
-            address: Address;
+            phone: string;
+            email?: string;
+            image?: string;
+            address?: Address;
+            role: "USER" | "ADMIN";
+            password: string;
         }
     }
 
@@ -66,7 +67,7 @@ declare global {
     }
 
     interface IUser {
-        _id: string;
+        id: string;
         fullName: string;
         phone: string;
         email?: string;

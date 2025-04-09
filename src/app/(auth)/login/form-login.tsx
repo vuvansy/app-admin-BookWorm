@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { App, Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useCurrentApp } from '@/context/app.context';
@@ -13,20 +13,23 @@ type FieldType = {
 };
 
 const LoginForm = () => {
-    const { setIsAuthenticated, setUser, user } = useCurrentApp();
+    const { isAuthenticated, setIsAuthenticated, setUser, user } = useCurrentApp();
     const { message, notification } = App.useApp();
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
 
     useEffect(() => {
         const redirectTo = searchParams.get("redirect");
-        if (user && redirectTo) {
+        if (isAuthenticated && user && redirectTo) {
             router.push(redirectTo);
         }
-    }, [user]);
+    }, [isAuthenticated, user, router, searchParams]);
 
     const onFinish = async (values: any) => {
         try {
+            setIsLoading(true);
+
             const { email, password } = values;
             const data = { email, password };
 
@@ -49,15 +52,22 @@ const LoginForm = () => {
                 // If user role is not ADMIN, show error and don't proceed
                 if (dataRes.data.user.role !== 'ADMIN') {
                     message.error('Bạn không có quyền truy cập vào hệ thống. Chỉ người dùng với vai trò ADMIN mới được phép đăng nhập.');
+                    setIsLoading(false);
                     return;
                 }
 
+                localStorage.setItem('access_token', dataRes.data.access_token);
+
                 // User is ADMIN, proceed with setting auth state
                 setIsAuthenticated(true);
-                // setUser(dataRes.data.user);
-                localStorage.setItem('access_token', dataRes.data.access_token);
+                setUser(dataRes.data.user);
+
                 message.success('Đăng nhập tài khoản thành công!');
-                router.push('/');
+
+                setTimeout(() => {
+                    router.push('/');
+                }, 200);
+
             } else {
                 notification.error({
                     message: 'Lỗi Đăng Nhập',
@@ -70,6 +80,8 @@ const LoginForm = () => {
                 message: 'Lỗi Đăng Nhập',
                 description: 'Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.',
             });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -105,7 +117,7 @@ const LoginForm = () => {
                     <Input.Password />
                 </Form.Item>
 
-                <Button type="primary" danger htmlType="submit" className='w-full'>Đăng Nhập</Button>
+                <Button type="primary" danger htmlType="submit" loading={isLoading} className='w-full'>Đăng Nhập</Button>
 
                 {/* <div className='my-[10px] text-body1 items-center flex justify-between'>
                     <span>Bạn chưa có tài khoản? <Link href="/register" className='text-red1'>Đăng ký ngay</Link></span>
