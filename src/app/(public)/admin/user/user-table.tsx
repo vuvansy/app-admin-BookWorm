@@ -259,7 +259,7 @@ const UserTable = () => {
             dataIndex: 'isBlocked',
             render: (isBlocked: boolean, record) => (
                 <Popconfirm
-                    placement="top"
+                    placement="topLeft"
                     title={`${isBlocked ? 'Mở khóa' : 'Khóa'} tài khoản`}
                     description={`Bạn có chắc chắn muốn ${isBlocked ? 'mở khóa' : 'khóa'} tài khoản của ${record.fullName}?`}
                     onConfirm={() => handleToggleUserStatus(!isBlocked, record._id)}

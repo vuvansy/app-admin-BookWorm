@@ -9,17 +9,17 @@ import { useState } from "react";
 import useSWR from "swr";
 
 interface UserIdProps {
-    userId: string | null;
+    user: IUserTable | null;
 }
 
 const fetcher = (...args: [RequestInfo, RequestInit?]) =>
     fetch(...args).then((res) => res.json());
 
-const OrderHistoryTable: React.FC<UserIdProps> = ({userId}) => {
+const OrderHistoryTable: React.FC<UserIdProps> = ({user}) => {
     const [status, setStatus] = useState<string | undefined>(undefined);
     
-    const url = userId
-        ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order/${userId}${status ? `?status=${status}` : ""}`
+    const url = user?._id
+        ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/order/${user._id}${status ? `?status=${status}` : ""}`
         : null;
     const { data: listOrder, error, isLoading } = useSWR<IBackendRes<IModelPaginate<IHistory>>>(
         url,

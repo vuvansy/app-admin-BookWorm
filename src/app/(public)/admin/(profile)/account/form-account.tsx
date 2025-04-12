@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
+import { useCurrentApp } from "@/context/app.context";
 import { Button, Checkbox, Col, Form, Input, Row, Select, Image, App, Upload, FormProps } from 'antd';
 import { PlusOutlined, ImportOutlined, ExportOutlined, EditTwoTone, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useRouter } from 'next/navigation';
@@ -27,7 +28,7 @@ const AccountForm = () => {
     const [imageUrl, setImageUrl] = useState<string | ArrayBuffer | null>(null);
     const [file, setFile] = useState(null);
     const [user, setUser] = useState<IUser>();
-    const [userId, setUserId] = useState<string | undefined>(undefined);
+    // const [userId, setUserId] = useState<string | undefined>(undefined);
     const [cities, setCities] = useState<City[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
     const [wards, setWards] = useState<Ward[]>([]);
@@ -36,6 +37,8 @@ const AccountForm = () => {
     const [form] = Form.useForm();
     const defaultAvatarUrl = 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'; // URL của ảnh avatar mặc định
     const router = useRouter();
+    const { user:CurrentUser } = useCurrentApp();
+    const userId = CurrentUser?.id;
 
     useEffect(() => {
         fetch("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
@@ -70,38 +73,37 @@ const AccountForm = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                setIsLoadingUserData(true);
-                const Token = localStorage.getItem('access_token');
-                if (!Token) {
-                    message.error('Bạn chưa đăng nhập. Vui lòng đăng nhập trước.');
-                    return;
-                }
-                const res = await sendRequest<IBackendRes<IFetchAccount>>({
-                    url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${Token}`,
-                    },
-                })
-                if (res.data) {
-                    setUserId(res.data.user.id);
-                }
-            } catch (error) {
-                if (error instanceof Error) {
-                    message.error(error.message);
-                } else {
-                    message.error('An unknown error occurred.');
-                }
-            } finally {
-                setIsLoadingUserData(false);
-            }
-        };
-        fetchUserId();
-    }, [message]);
-
+    // useEffect(() => {
+    //     const fetchUserId = async () => {
+    //         try {
+    //             setIsLoadingUserData(true);
+    //             const Token = localStorage.getItem('access_token');
+    //             if (!Token) {
+    //                 message.error('Bạn chưa đăng nhập. Vui lòng đăng nhập trước.');
+    //                 return;
+    //             }
+    //             const res = await sendRequest<IBackendRes<IFetchAccount>>({
+    //                 url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/account`,
+    //                 method: "GET",
+    //                 headers: {
+    //                     Authorization: `Bearer ${Token}`,
+    //                 },
+    //             })
+    //             if (res.data) {
+    //                 setUserId(res.data.user.id);
+    //             }
+    //         } catch (error) {
+    //             if (error instanceof Error) {
+    //                 message.error(error.message);
+    //             } else {
+    //                 message.error('An unknown error occurred.');
+    //             }
+    //         } finally {
+    //             setIsLoadingUserData(false);
+    //         }
+    //     };
+    //     fetchUserId();
+    // }, [message]);
 
     const { data: fetchUserData, isLoading, error } = useSWR(
         userId ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/user/${userId}` : null,

@@ -13,15 +13,15 @@ import ImportAuthor from "@/app/(public)/admin/author/data/import.auhor";
 
 
 const CSVLinkNoSSR = dynamic(
-  () => import("react-csv").then((mod) => mod.CSVLink),
-  { ssr: false }
+    () => import("react-csv").then((mod) => mod.CSVLink),
+    { ssr: false }
 );
 
 const csvHeaders = [
     { label: "ID", key: "_id" },
     { label: "Tên tác giả", key: "name" },
-  ];
-  
+];
+
 
 const AuthorTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
@@ -69,7 +69,7 @@ const AuthorTable = () => {
             method: "DELETE",
         });
         if (res.data) {
-            message.success("Xóa tác giả thành công.");
+            message.success("Đã xóa tác giả thành công.");
             fetchAuthor();
         } else {
             message.error(res.message);
@@ -78,7 +78,7 @@ const AuthorTable = () => {
 
     const cancel: PopconfirmProps["onCancel"] = (e) => {
         console.log(e);
-        message.error("Click on No");
+        message.error("Đã hủy thao tác.");
     };
 
     const columns: ColumnsType<IAuthorTable> = [
@@ -104,13 +104,13 @@ const AuthorTable = () => {
                     {<EditTwoTone twoToneColor={'#f57800'} onClick={() => showEdit(record)} className="px-[10px]" />}
 
                     <Popconfirm
-                        placement="leftTop"
+                        placement="left"
                         title="Delete the task"
                         description="Bạn có chắc chắn muốn xóa tác giả này không?"
                         onConfirm={() => handleDeleteAuthor(record._id)}
                         onCancel={cancel}
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Đồng ý"
+                        cancelText="Hủy"
                     >
                         <span className="cursor-pointer">{<DeleteTwoTone twoToneColor={'#ff4d4f'} />}</span>
                     </Popconfirm>
@@ -124,21 +124,21 @@ const AuthorTable = () => {
             <div className="bg-white w rounded p-4">
                 <p className=" text-body-bold uppercase">Quản Lý Tác Giả</p>
                 <div className="flex justify-end pb-5 gap-2">
-                <CSVLinkNoSSR 
-                     headers={csvHeaders}
-                     data={author}
-                      filename="danh_sach_tac_gia.csv"
-               >
-              <Button icon={<ExportOutlined />} type="primary">
-                Export
-              </Button>
-            </CSVLinkNoSSR>
-            <Button
-                            icon={<ImportOutlined />}
-                            type="primary"
-                            onClick={() => setOpenModalImport(true)}
-                        >Import
+                    <CSVLinkNoSSR
+                        headers={csvHeaders}
+                        data={author}
+                        filename="danh_sach_tac_gia.csv"
+                    >
+                        <Button icon={<ExportOutlined />} type="primary">
+                            Export
                         </Button>
+                    </CSVLinkNoSSR>
+                    <Button
+                        icon={<ImportOutlined />}
+                        type="primary"
+                        onClick={() => setOpenModalImport(true)}
+                    >Import
+                    </Button>
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => setOpenAdd(true)}>Thêm mới</Button>
                 </div>
 
@@ -163,11 +163,11 @@ const AuthorTable = () => {
                 author={selectedAuthor}
                 onSuccess={fetchAuthor}
             />
-              <ImportAuthor
-                    openModalImport={openModalImport}
-                    setOpenModalImport={setOpenModalImport}
-                    onSuccess={fetchAuthor}
-                />
+            <ImportAuthor
+                openModalImport={openModalImport}
+                setOpenModalImport={setOpenModalImport}
+                onSuccess={fetchAuthor}
+            />
         </div>
     );
 };

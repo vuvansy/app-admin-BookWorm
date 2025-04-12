@@ -96,7 +96,7 @@ const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
                                     </Link>
                                 </Button> */}
                                 <h2 className="text-center pt-[20px] text-sub-heading-bold uppercase">Lịch Sử Đơn Hàng</h2>
-                                <OrderHistoryTable userId={user._id} />
+                                <OrderHistoryTable user={user} />
                             </div>
                         </div>
                     </div>
