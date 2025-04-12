@@ -4,6 +4,7 @@ import { Button, ConfigProvider, Drawer, Image } from "antd";
 import IUserTable from "./user-table";
 import React, { useState } from "react";
 import Link from "next/link";
+import OrderHistoryTable from "./order-history-table";
 
 interface UserDrawerProps {
     open: boolean;
@@ -59,7 +60,7 @@ const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
                                 </div>
                                 <div className="flex-1 flex">
                                     <div className="basis-5/12 leading-[60px] text-body1 flex items-center justify-center bg-bg-main border border-black/10">Số điện thoại</div>
-                                    <div className="basis-7/12 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">{user.phone}</div>
+                                    <div className="basis-7/12 leading-[30px] text-body1 flex items-center justify-center border border-bg-main">{user.phone || "Không có số điện thoại"}</div>
                                 </div>
                             </div>
                             <div className="w-full flex">
@@ -88,12 +89,14 @@ const ModalProfile: React.FC<UserDrawerProps> = ({ open, user, onClose }) => {
                                     <div className="basis-7/12 leading-[30px] text-body1 flex items-center justify-center border border-bg-main"> {user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A'}</div>
                                 </div>
                             </div>
-                            <div className="w-full flex justify-start mt-5">
-                                <Button type="primary"  >
+                            <div className="w-full mt-5">
+                                {/* <Button type="primary"  >
                                     <Link href={`/admin/order/${user._id}`}>
                                         Lịch Sử Đơn Hàng
                                     </Link>
-                                </Button>
+                                </Button> */}
+                                <h2 className="text-center pt-[20px] text-sub-heading-bold uppercase">Lịch Sử Đơn Hàng</h2>
+                                <OrderHistoryTable userId={user._id} />
                             </div>
                         </div>
                     </div>

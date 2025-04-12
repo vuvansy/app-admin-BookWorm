@@ -3,7 +3,7 @@
 import { Table, Button, Input, Space, Drawer, ConfigProvider, Image, Popconfirm, message, Switch, App } from "antd";
 import { PlusOutlined, ImportOutlined, ExportOutlined, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import type { PopconfirmProps } from 'antd';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ModalProfile from "./modal-profile";
 import ModalEdit from "./modal-edit";
 import ModalAdd from "./modal-add";
@@ -97,7 +97,7 @@ const UserTable = () => {
     });
     const [filter, setFilter] = useState({ fullName: "", email: "" });
 
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         setLoading(true);
         try {
             const res = await sendRequest<IBackendRes<UserData>>({
@@ -110,13 +110,13 @@ const UserTable = () => {
                     email: filter.email,
                 }
             });
-
+    
             if (res?.data) {
                 setCurrentDataTable(res.data?.result ?? [])
                 if (res.data.result && Array.isArray(res.data.result)) {
                     setExportData(res.data.result);
                     setUser(res.data.result);
-
+    
                     if (res.data.meta) {
                         setMeta(res.data.meta);
                     }
@@ -134,14 +134,16 @@ const UserTable = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [meta.page, meta.limit, filter.fullName, filter.email, setLoading, setCurrentDataTable, setExportData, setUser, setMeta, message]);
 
     useEffect(() => {
         // Một biến flag để theo dõi component có mount hay không
         let isMounted = true;
 
         const loadData = async () => {
-            await fetchUser();
+            if (isMounted) {
+                await fetchUser();
+            }
         };
 
         loadData();
@@ -152,7 +154,7 @@ const UserTable = () => {
         };
 
         // Chỉ re-fetch khi các dependencies thực sự thay đổi
-    }, [meta.page, meta.limit, filter.fullName, filter.email, reloadData]);
+    }, [meta.page, meta.limit, filter.fullName, filter.email, reloadData, fetchUser]);
 
     const handleFilter = (values: any) => {
         setMeta(prev => ({
