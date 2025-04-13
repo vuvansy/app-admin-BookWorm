@@ -1,68 +1,95 @@
 'use client'
 
 import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { App, Button, Checkbox, Form, Input } from 'antd';
 import Link from 'next/link';
-
-const onFinish = (values: any) => {
-    console.log('Success:', values);
-};
-
-const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-};
+import { useRouter } from 'next/navigation';
 
 type FieldType = {
-    oldPassword?: string;
-    newPassword?: string;
-    confirmPassword?: string;
+    current_password: string;
+    new_password: string;
+    confirm_password: string;
 };
 
-const ChangePasswordForm = () => (
-    <div className=" flex justify-center bg-white py-7 rounded mt-1">
-        <div className=' w-[40vw] mx-auto'>
-            <div className=" text-heading3  flex items-center justify-center">Đổi Mật Khẩu</div>
-            <Form
-                name="basic"
-                // labelCol={{ span: 8 }}
-                // wrapperCol={{ span: 16 }}
-                // style={{ maxWidth: 600, marginTop: "50px" }}
-                className='max-w-[800px] !pt-5'
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                layout="vertical"
-                autoComplete="off"
-            >
-                <Form.Item<FieldType>
-                    label="Mật Khẩu Cũ"
-                    name="oldPassword"
-                    rules={[{ required: true, message: 'Hãy nhập mật khẩu cũ!' }]}
-                >
-                    <Input.Password />
-                </Form.Item>
-                <Form.Item<FieldType>
-                    label="Mật Khẩu Mới"
-                    name="newPassword"
-                    rules={[{ required: true, message: 'Hãy nhập mật khẩu mới!' }]}
-                >
-                    <Input.Password />
-                </Form.Item>
-                <Form.Item<FieldType>
-                    label="Xác Nhận Mật Khẩu"
-                    name="confirmPassword"
-                    rules={[{ required: true, message: 'Hãy nhập xác nhận mật khẩu!' }]}
-                >
-                    <Input.Password />
-                </Form.Item>
+const ChangePasswordForm = () => {
+    // const router = useRouter();
+    const [form] = Form.useForm();
+    const { message, modal, notification } = App.useApp();
+    const Token = localStorage.getItem("access_token");
+    const onFinish = async (values: any) => {
+        const { current_password, new_password, confirm_password } = values;
+        const data = { current_password, new_password, confirm_password };
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/change-password`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${Token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+            const d = await res.json();
+            if (d.statusCode === 200) {
+                message.success(d.message);
+                // setTimeout(() => form.resetFields(), 0);
+                form.resetFields();
+            }
+            else {
+                message.error(d.message);
+            }
+        } catch (error) {
+            console.log('error', error)
+        }
+    };
 
-                <Button type="primary" danger htmlType="submit" className='w-full'>Lưu Thay Đổi</Button>
-            </Form>
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
+    return (
+        <div className=" flex justify-center bg-white py-7 rounded mt-1">
+            <div className=' w-[40vw] mx-auto'>
+                <div className=" text-heading3  flex items-center justify-center">Đổi Mật Khẩu</div>
+                <Form
+                    form={form}
+                    name="basic"
+                    className='max-w-[800px] !pt-5'
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    layout="vertical"
+                    autoComplete="off"
+                >
+                    <Form.Item<FieldType>
+                        label="Mật khẩu cũ"
+                        name="current_password"
+                        rules={[{ required: true, message: 'Hãy Nhập Mật Khẩu Cũ!' }]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+
+                    <Form.Item<FieldType>
+                        label="Mật khẩu mới"
+                        name="new_password"
+                        rules={[{ required: true, message: 'Hãy Nhập Mật Khẩu Mới!' }]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+
+                    <Form.Item<FieldType>
+                        label="Xác nhận mật khẩu"
+                        name="confirm_password"
+                        rules={[{ required: true, message: 'Hãy Nhập Xác Nhận Mật Khẩu!' }]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+
+                    <Button type="primary" danger htmlType="submit" className='w-full'>Lưu Thay Đổi</Button>
+                </Form>
+            </div>
         </div>
-    </div>
-
-
-
-
-);
+    );
+};
 
 export default ChangePasswordForm;
