@@ -73,7 +73,18 @@ const UserChart = () => {
   if (error || !data?.data) {
     return <p>Lỗi khi tải dữ liệu hoặc dữ liệu không hợp lệ!</p>;
   }
-
+  const getChartTitle = () => {
+    if (selectedYear && selectedMonth) {
+      if (selectedMonth === 0) {
+        return `Biểu đồ người dùng năm ${selectedYear}`;
+      }
+      return `Biểu đồ người dùng tuần của tháng ${selectedMonth} năm ${selectedYear}`;
+    }
+    if (selectedYear) {
+      return `Biểu đồ người dùng năm ${selectedYear}`;
+    }
+    return "Biểu đồ người dùng 6 tháng gần đây";
+  };
   // ✅ Chuyển object `{ "2024-10": 0, "2025-2": 3 }` thành array `[ { name: "2024-10", users: 0 }, { name: "2025-2", users: 3 } ]`
   const transformedData = Object.entries(data.data).map(([name, users]) => ({
     name,
@@ -96,13 +107,8 @@ const UserChart = () => {
   };
 
   const yearOptions = [
-    { value: 2021, label: "Năm 2021" },
-    { value: 2022, label: "Năm 2022" },
-    { value: 2023, label: "Năm 2023" },
     { value: 2024, label: "Năm 2024" },
     { value: 2025, label: "Năm 2025" },
-    { value: 2026, label: "Năm 2026" },
-    { value: 2027, label: "Năm 2027" },
   ];
 
   const monthOptions = [
@@ -123,9 +129,7 @@ const UserChart = () => {
   return (
     <div className="bg-white px-[15px] mt-5 py-[20px] rounded border">
       <div className="flex justify-between">
-        <h2 className="text-body-bold pb-[10px]">
-          Biểu Đồ Người Dùng 6 Tháng Gần Nhất
-        </h2>
+        <h2 className="text-body-bold pb-[10px] pr-2">{getChartTitle()}</h2>
         <div className="flex gap-5">
           <Select
             style={{ width: 120 }}
