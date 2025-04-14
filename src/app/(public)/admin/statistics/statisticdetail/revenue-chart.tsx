@@ -87,13 +87,9 @@ const RevenueChart = () => {
   };
 
   const yearOptions = [
-    { value: 2021, label: "Năm 2021" },
-    { value: 2022, label: "Năm 2022" },
-    { value: 2023, label: "Năm 2023" },
     { value: 2024, label: "Năm 2024" },
     { value: 2025, label: "Năm 2025" },
-    { value: 2026, label: "Năm 2026" },
-    { value: 2027, label: "Năm 2027" },
+  
   ];
 
   const monthOptions = [

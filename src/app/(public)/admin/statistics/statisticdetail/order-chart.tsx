@@ -66,14 +66,14 @@ const OrderChart = () => {
   const getChartTitle = () => {
     if (selectedYear && selectedMonth) {
       if (selectedMonth === 0) {
-        return `Biểu đồ doanh thu năm ${selectedYear}`;
+        return `Biểu đồ đơn hàng năm ${selectedYear}`;
       }
-      return `Biểu đồ doanh thu tuần của tháng ${selectedMonth} năm ${selectedYear}`;
+      return `Biểu đồ đơn hàng tuần của tháng ${selectedMonth} năm ${selectedYear}`;
     }
     if (selectedYear) {
-      return `Biểu đồ doanh thu năm ${selectedYear}`;
+      return `Biểu đồ đơn hàng năm ${selectedYear}`;
     }
-    return "Biểu đồ doanh thu 6 tháng gần đây";
+    return "Biểu đồ đơn hàng 6 tháng gần đây";
   };
 
   const orderStats: Record<string, OrderStats> = data.data;
@@ -90,9 +90,9 @@ const OrderChart = () => {
             value={selectedYear}
             placeholder="Chọn Năm"
             onChange={handleYearChange}
-            options={[...Array(10)].map((_, i) => ({
-              value: 2020 + i,
-              label: `Năm ${2020 + i}`,
+            options={[...Array(2)].map((_, i) => ({
+              value: 2024 + i,
+              label: `Năm ${2024 + i}`,
             }))}
             allowClear
           />
