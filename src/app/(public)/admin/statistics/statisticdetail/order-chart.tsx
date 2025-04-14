@@ -21,15 +21,21 @@ interface OrderStats {
 }
 
 const OrderChart = () => {
-  const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
-  const [selectedMonth, setSelectedMonth] = useState<number | undefined>(undefined);
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined
+  );
+  const [selectedMonth, setSelectedMonth] = useState<number | undefined>(
+    undefined
+  );
 
   const baseUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/stats/orders`;
   const queryParams = new URLSearchParams();
   if (selectedYear) queryParams.append("year", selectedYear.toString());
   if (selectedMonth) queryParams.append("month", selectedMonth.toString());
 
-  const apiUrl = queryParams.toString() ? `${baseUrl}?${queryParams.toString()}` : baseUrl;
+  const apiUrl = queryParams.toString()
+    ? `${baseUrl}?${queryParams.toString()}`
+    : baseUrl;
   const { data, error, isLoading } = useSWR(apiUrl, fetcher);
 
   const handleYearChange = (value: number) => {
@@ -57,6 +63,18 @@ const OrderChart = () => {
     );
   }
   if (error || !data?.data) return <p>Lỗi khi tải dữ liệu!</p>;
+  const getChartTitle = () => {
+    if (selectedYear && selectedMonth) {
+      if (selectedMonth === 0) {
+        return `Biểu đồ doanh thu năm ${selectedYear}`;
+      }
+      return `Biểu đồ doanh thu tuần của tháng ${selectedMonth} năm ${selectedYear}`;
+    }
+    if (selectedYear) {
+      return `Biểu đồ doanh thu năm ${selectedYear}`;
+    }
+    return "Biểu đồ doanh thu 6 tháng gần đây";
+  };
 
   const orderStats: Record<string, OrderStats> = data.data;
   const chartLabels = Object.keys(orderStats);
@@ -65,7 +83,7 @@ const OrderChart = () => {
   return (
     <div className="w-[49%] bg-white px-[15px] py-[20px] rounded border">
       <div className="flex justify-between">
-        <h2 className="text-body-bold pb-[10px]">Biểu Đồ Đơn Hàng 6 Tháng Gần Nhất</h2>
+        <h2 className="text-body-bold pb-[10px] pr-2">{getChartTitle()}</h2>
         <div className="flex gap-5">
           <Select
             style={{ width: 120 }}
