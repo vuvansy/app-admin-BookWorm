@@ -318,4 +318,13 @@ declare global {
     interface IRevenueStats {
         [key: string]: number; 
     }
+
+    interface IBanner {
+        _id?: string;
+        name: string;
+        image: string;
+        status: boolean;  // true = hiển thị, false = ẩn
+        createdAt?: Date;
+        updatedAt?: Date;
+    }
 }

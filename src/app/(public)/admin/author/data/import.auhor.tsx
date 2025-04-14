@@ -60,8 +60,7 @@ const ImportAuthor = (props: IProps) => {
                     //load file to buffer (logic đọc file)
                     const workbook = new Exceljs.Workbook();
                     const arrayBuffer = await file.arrayBuffer()
-                    const buffer = Buffer.from(arrayBuffer);
-                    await workbook.xlsx.load(buffer);
+                    await workbook.xlsx.load(arrayBuffer);
 
                     //convert file to json
                     let jsonData: IDataImport[] = [];

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { App, Button, Checkbox, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -15,8 +15,19 @@ const ChangePasswordForm = () => {
     // const router = useRouter();
     const [form] = Form.useForm();
     const { message, modal, notification } = App.useApp();
-    const Token = localStorage.getItem("access_token");
+    const [token, setToken] = useState<string | null>(null);
+
+    // Lấy token từ localStorage trong client
+    useEffect(() => {
+        const storedToken = localStorage.getItem('access_token');
+        setToken(storedToken);
+    }, []);
     const onFinish = async (values: any) => {
+        if (!token) {
+            message.error('Không tìm thấy token đăng nhập.');
+            return;
+        }
+
         const { current_password, new_password, confirm_password } = values;
         const data = { current_password, new_password, confirm_password };
         try {
@@ -25,7 +36,7 @@ const ChangePasswordForm = () => {
                 {
                     method: 'PATCH',
                     headers: {
-                        Authorization: `Bearer ${Token}`,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data),

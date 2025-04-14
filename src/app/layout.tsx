@@ -7,7 +7,7 @@ import { App } from "antd";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "BookWorm",
+  title: "Admin BookWorm",
   description: "Nhà sách BookWorm",
 };
 
