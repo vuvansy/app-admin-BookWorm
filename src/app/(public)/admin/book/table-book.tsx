@@ -184,7 +184,7 @@ const TableBook: React.FC = () => {
       dataIndex: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
       render: (name: string) => (
-        <div className="w-[250px] whitespace-nowrap overflow-hidden text-ellipsis">
+        <div className="w-[230px] whitespace-nowrap overflow-hidden text-ellipsis">
           {name}
         </div>
       ),
@@ -193,7 +193,7 @@ const TableBook: React.FC = () => {
       title: "Tác Giả",
       dataIndex: "authors",
       render: (authors: IAuthor[] | undefined) => (
-        <div className="w-[150px] whitespace-nowrap overflow-hidden text-ellipsis">
+        <div className="w-[130px] whitespace-nowrap overflow-hidden text-ellipsis">
           {authors?.map((author) => author.name).join(", ") || ""}
         </div>
       ),
@@ -202,7 +202,7 @@ const TableBook: React.FC = () => {
       title: "Thể Loại",
       dataIndex: "id_genre",
       render: (genre: IGenre) => (
-        <div className="w-[150px] whitespace-nowrap overflow-hidden text-ellipsis">
+        <div className="w-[130px] whitespace-nowrap overflow-hidden text-ellipsis">
           {genre?.name}
         </div>
       ),
@@ -213,6 +213,16 @@ const TableBook: React.FC = () => {
       render: (publishers: string | undefined) => (
         <div className="w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">
           {publishers}
+        </div>
+      ),
+    },
+    {
+      title: "Số Lượng",
+      align: "center",
+      dataIndex: "quantity",
+      render: (quantity: string | undefined) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {quantity}
         </div>
       ),
     },
