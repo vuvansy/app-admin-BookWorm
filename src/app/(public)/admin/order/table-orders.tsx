@@ -1,19 +1,24 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Table, Tabs, TableProps, Empty, Spin } from 'antd';
 import { BsEyeFill } from "react-icons/bs";
 import Link from "next/link";
 import useSWR from "swr";
-import { sendRequest } from "@/utils/api";
 import dayjs from "dayjs";
+import type { FormProps } from 'antd';
+import { Button, Form, Input } from 'antd';
 
 const fetcher = (...args: [RequestInfo, RequestInit?]) =>
     fetch(...args).then((res) => res.json());
 
+type FieldType = {
+    id_order?: string;
+};
 
 const TableOrders = () => {
 
+    const [form] = Form.useForm();
     const [meta, setMeta] = useState({
         page: 1,
         limit: 10,
@@ -22,12 +27,14 @@ const TableOrders = () => {
     });
     const [sortQuery, setSortQuery] = useState<string>("createdAt");
     const [status, setStatus] = useState<string | undefined>("0");
+    const [searchId, setSearchId] = useState<string>("");
 
     const params = new URLSearchParams({
         page: meta.page.toString(),
         limit: meta.limit.toString(),
         ...(status ? { status } : {}),
-        ...(sortQuery ? { sort: sortQuery } : {})
+        ...(sortQuery ? { sort: sortQuery } : {}),
+        ...(searchId ? { _id: searchId } : {}) // <- THÊM DÒNG NÀY
     }).toString();
     const queryString = params ? `?${params}` : "";
 
@@ -56,6 +63,18 @@ const TableOrders = () => {
         );
     };
     if (orderError) return <p>Có lỗi xảy ra khi tải dữ liệu!</p>;
+
+    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+        const { id_order } = values;
+        setSearchId(id_order || "");
+        setMeta((prev) => ({ ...prev, page: 1 }));
+    };
+
+    const handleResetSearch = () => {
+        setSearchId("");
+        setMeta((prev) => ({ ...prev, page: 1 }));
+        form.resetFields();
+    };
 
     const items = [
         { key: "", label: `Tất cả (${statusCounts[""] || 0})` },
@@ -158,6 +177,7 @@ const TableOrders = () => {
     ];
     return (
         <>
+
             <Tabs
                 activeKey={status ?? "0"}
                 items={items}
@@ -166,6 +186,36 @@ const TableOrders = () => {
                     setMeta((prev) => ({ ...prev, page: 1 }));
                 }}
             />
+
+            <Form
+                form={form}
+                name="basic"
+                style={{ maxWidth: 600 }}
+                onFinish={onFinish}
+                
+            >
+                <div className="flex justify-between gap-4">
+                    <Form.Item<FieldType>
+                         label={<span className="font-bold">Mã Đơn Hàng</span>}
+                        name="id_order"
+                        className="basis-4/6"
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label={null} className="basis-1/6">
+                        <Button type="primary" htmlType="submit">
+                            Tìm Kiếm
+                        </Button>
+                    </Form.Item>
+                    <Form.Item label={null} className="basis-1/6">
+                        <Button htmlType="button" onClick={handleResetSearch} className="w-full">
+                            Đặt Lại
+                        </Button>
+                    </Form.Item>
+                </div>
+
+            </Form>
+
             <Table<IHistory>
                 columns={columns}
                 dataSource={orders}
@@ -182,7 +232,7 @@ const TableOrders = () => {
                             <div> {range[0]}-{range[1]} trên {total} rows</div>
                         ),
                         onChange: (page, limit) => {
-                            console.log(`Chuyển sang trang ${page}, limit: ${limit}`);
+                            // console.log(`Chuyển sang trang ${page}, limit: ${limit}`);
                             setMeta({ ...meta, page: page, limit });
                         }
                     }
