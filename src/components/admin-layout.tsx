@@ -18,7 +18,7 @@ import {
     FileImageOutlined,
     FileDoneOutlined,
 } from '@ant-design/icons';
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoNewspaperOutline, IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { TbLogout } from "react-icons/tb";
 import { Layout, Menu, Dropdown, Space, Avatar, Modal, Popconfirm, App } from 'antd';
@@ -111,6 +111,11 @@ export default function AdminLayout({
             label: <Link href='/admin/reviews'>Phản hồi</Link>,
             key: '/admin/reviews',
             icon: <CommentOutlined />
+        },
+        {
+            label: <Link href='/admin/news'>Tin tức</Link>,
+            key: '/admin/news',
+            icon: <IoNewspaperOutline />
         },
         {
             label: <span>Thống kê</span>,
