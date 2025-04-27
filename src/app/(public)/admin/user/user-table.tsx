@@ -339,6 +339,7 @@ const UserTable = () => {
                     }}
                     rowKey="_id"
                     size="small"
+                    className="ant-table-striped"
                 />
                 <ModalProfile open={openProfile} user={selectedUser} onClose={onClose} />
                 <ModalAdd

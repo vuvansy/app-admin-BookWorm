@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 
 import { Button, message, Popconfirm, PopconfirmProps, Space, Table } from "antd";
@@ -22,34 +22,71 @@ const csvHeaders = [
     { label: "Tên tác giả", key: "name" },
 ];
 
+type AuthorData = {
+    meta: {
+        page: number;
+        limit: number;
+        pages: number;
+        total: number;
+    };
+    result: IAuthorTable[];
+}
 
 const AuthorTable = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [author, setAuthor] = useState<IAuthorTable[]>([]);
     const [selectedAuthor, setSelectedAuthor] = useState<IAuthorTable | null>(null);
+    const [currentDataTable, setCurrentDataTable] = useState<IAuthorTable[]>([]);
     const [openModalImport, setOpenModalImport] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+    const [meta, setMeta] = useState({
+        page: 1,
+        limit: 5,
+        pages: 0,
+        total: 0,
+    });
     // const [currentPage, setCurrentPage] = useState(1);
     // const pageSize = 5;
-    const fetchAuthor = async () => {
+    const fetchAuthor = useCallback(async () => {
+        setLoading(true);
         try {
-            const res = await sendRequest<IBackendRes<IAuthorTable[]>>({
+            const res = await sendRequest<IBackendRes<AuthorData>>({
                 url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author`,
                 method: "GET",
+                queryParams:{
+                    page: meta.page,
+                    limit: meta.limit,
+                }
             });
-            console.log(res.data);
-            if (res.data) {
-                setAuthor(res.data);
+            if (res?.data) {
+                setCurrentDataTable(res.data?.result ?? [])
+                if (res.data.result && Array.isArray(res.data.result)) {
+                    setAuthor(res.data.result);
+    
+                    if (res.data.meta) {
+                        setMeta(res.data.meta);
+                    }
+                } else {
+                    setAuthor([]);
+                }
+            } else {
+                message.error(res?.message || 'Không thể tải dữ liệu tác giả');
+                setAuthor([]);
             }
         } catch (error) {
-            console.log(error);
+            console.error('Lỗi khi tải dữ liệu người dùng:', error);
+            message.error('Có lỗi xảy ra khi tải dữ liệu người dùng');
+            setAuthor([]);
+        } finally {
+            setLoading(false);
         }
-    };
+    }, [meta.page, meta.limit]);
     useEffect(() => {
 
         fetchAuthor();
 
-    }, []);
+    }, [fetchAuthor]);
     const showEdit = (author: IAuthorTable) => {
         setSelectedAuthor(author);
         setOpenEdit(true);
@@ -63,18 +100,18 @@ const AuthorTable = () => {
         setOpenEdit(false);
         setSelectedAuthor(null);
     };
-    const handleDeleteAuthor = async (_id: string) => {
-        const res = await sendRequest<IBackendRes<IAuthorTable>>({
-            url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author/${_id}`,
-            method: "DELETE",
-        });
-        if (res.data) {
-            message.success("Đã xóa tác giả thành công.");
-            fetchAuthor();
-        } else {
-            message.error(res.message);
-        }
-    };
+    // const handleDeleteAuthor = async (_id: string) => {
+    //     const res = await sendRequest<IBackendRes<IAuthorTable>>({
+    //         url: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/author/${_id}`,
+    //         method: "DELETE",
+    //     });
+    //     if (res.data) {
+    //         message.success("Đã xóa tác giả thành công.");
+    //         fetchAuthor();
+    //     } else {
+    //         message.error(res.message);
+    //     }
+    // };
 
     const cancel: PopconfirmProps["onCancel"] = (e) => {
         console.log(e);
@@ -103,7 +140,7 @@ const AuthorTable = () => {
                 <Space size="middle">
                     {<EditTwoTone twoToneColor={'#f57800'} onClick={() => showEdit(record)} className="px-[10px]" />}
 
-                    <Popconfirm
+                    {/* <Popconfirm
                         placement="left"
                         title="Delete the task"
                         description="Bạn có chắc chắn muốn xóa tác giả này không?"
@@ -113,7 +150,7 @@ const AuthorTable = () => {
                         cancelText="Hủy"
                     >
                         <span className="cursor-pointer">{<DeleteTwoTone twoToneColor={'#ff4d4f'} />}</span>
-                    </Popconfirm>
+                    </Popconfirm> */}
 
                 </Space>
             ),
@@ -145,11 +182,24 @@ const AuthorTable = () => {
                 <Table
                     columns={columns}
                     dataSource={author}
-                    // pagination={{
-                    //     pageSize,
-                    //     current: currentPage,
-                    //     onChange: (page) => setCurrentPage(page),
-                    // }}
+                    loading={loading}
+                    pagination={{
+                        current: meta.page,
+                        pageSize: meta.limit,
+                        showSizeChanger: true,
+                        total: meta.total,
+                        onChange: (page, pageSize) =>
+                            setMeta((prev) => ({
+                                ...prev,
+                                page: page,
+                                limit: pageSize,
+                            })),
+                        showTotal: (total, range) => (
+                            <div>
+                                {range[0]}-{range[1]} trên {total} rows
+                            </div>
+                        ),
+                    }}
                     size="small"
                     rowKey="_id"
                     className="ant-table-striped"
