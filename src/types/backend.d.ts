@@ -327,4 +327,17 @@ declare global {
         createdAt?: Date;
         updatedAt?: Date;
     }
+    interface IPost {
+        _id: string;
+        title: string;
+        image: string;
+        excerpt: string;
+        content: string;
+        status: boolean;
+        deleted: boolean;
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
+      }
+
 }
