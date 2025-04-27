@@ -242,7 +242,7 @@ const TableGiftVoucher: React.FC = () => {
             onClick={() => handleOpenEditModal(record)}
             className="px-[10px]"
           />
-          <Popconfirm
+          {/* <Popconfirm
             placement="topLeft"
             title="Xóa mã giảm giá"
             description="Bạn có chắc muốn xóa mã giảm giá này không?"
@@ -251,7 +251,7 @@ const TableGiftVoucher: React.FC = () => {
             onConfirm={() => handleDeleteCoupon(record)}
           >
             <DeleteTwoTone twoToneColor={"#ff4d4f"} />
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
