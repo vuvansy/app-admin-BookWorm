@@ -171,7 +171,7 @@ const TableBanner: React.FC = () => {
             style={{ cursor: "pointer" }}
             onClick={() => showEditModal(record)}
           />
-          <Popconfirm
+          {/* <Popconfirm
             placement="leftTop"
             title="Xác nhận xóa Banner"
             description="Bạn có chắc chắn muốn xóa Banner này?"
@@ -182,7 +182,7 @@ const TableBanner: React.FC = () => {
             <span style={{ cursor: "pointer" }}>
               <DeleteTwoTone twoToneColor="#ff4d4f" />
             </span>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       ),
     },
